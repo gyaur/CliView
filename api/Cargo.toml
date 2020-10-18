@@ -14,7 +14,9 @@ serde = { version = "1.0", features = ["derive"] }
 rocket = "0.4"
 rocket_contrib = "0.4"
 confy = "0.4"
-
+reqwest = { version = "0.10", features = ["blocking", "json"] }
+#Needed for cross-compile
+openssl = { version = "0.10.30", features = ["vendored"] }
 
 [[bin]]
 name = "queue"
@@ -27,6 +29,10 @@ path = "src/streamer/main.rs"
 [[bin]]
 name = "proxy"
 path = "src/proxy/main.rs"
+
+[[bin]]
+name = "command"
+path = "src/command/main.rs"
 
 [lib]
 name = "lib"
