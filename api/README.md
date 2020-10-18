@@ -83,7 +83,6 @@ All request and response bodies are empty unless specified otherwise
 
 **/skip [POST]**
 * Body: Empty
-  * where *ammount* is multiple of 30 or 600 and represented in seconds. Positive *ammount* is seek forward and negaitve *ammount* seek backwards
 * Responses:
   * 200 - OK
     * currently playing video is skipeed
@@ -107,3 +106,21 @@ pip install flask
 ```
 python  dummy_api.py
 ```
+
+## Architecture
+
+The api is split into 3 layers:
+1 Proxy layer
+2 Queueing, Command validation and preprocessing
+3 Streaming layer
+
+TODO:
+* Add tests
+* Add arch description
+* Possible watchdog layer to start the processes and handle crashes
+* Finish streamloop
+* Finish proxy
+* Finish queue
+* Finish command
+* Add CI/CD
+* More experimentation with docker
