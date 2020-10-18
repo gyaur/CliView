@@ -1,35 +1,42 @@
-#![feature(proc_macro_hygiene, decl_macro)]
 use lib::Config as CliViewConfig;
-use lib::Event;
 use lib::GenericResult as Result;
-use rocket;
-use rocket::config::{Config, Environment};
-use std::sync::mpsc::channel;
-use std::thread;
+use lib::Url;
+use lib::{extract_url, stream, write_to_stdin};
+// use reqwest;
+use std::thread::sleep;
 use std::time::Duration;
+
+fn stream_loop(cfg: CliViewConfig) -> Result<()> {
+    loop {
+        // get next video from squeue service
+        let address: &str = &format!("localhost:{}", cfg.queue_port);
+        let curr = reqwest::blocking::get(address)?.json::<Option<Url>>()?;
+        if let Some(url) = curr.clone() {
+            //start process
+            let mut process = stream(&extract_url(&url.url).unwrap(), 0).unwrap();
+            sleep(cfg.playback_start_timeout);
+            write_to_stdin(&mut process, "p")?;
+            sleep(cfg.playback_loadscreen_timeout);
+            write_to_stdin(&mut process, "p")?;
+            loop {
+                if let Some(val) = process.poll() {
+                    break;
+                }
+                sleep(cfg.command_wait_timeout);
+                //reqwest command queue
+                // if let Ok(command) = receiver.try_recv() {
+                //     //fn to interact with the process
+                // }
+                //poll the process is running and try_receive from receiver
+            }
+        }
+        sleep(Duration::from_millis(500));
+    }
+}
 
 fn main() -> Result<()> {
     let cfg = CliViewConfig::load()?;
-    let (sender, receiver) = channel::<Option<Event>>();
-    let streaming_thread = thread::spawn(move || loop {
-        println!("{:?}", receiver.try_recv());
-        thread::sleep(Duration::from_secs(1));
-    });
-    let rocket_config = Config::build(Environment::Staging)
-        .address("127.0.0.1")
-        .port(cfg.streamer_port)
-        .workers(cfg.num_workers)
-        .unwrap();
-
-    sender.send(Some(Event::Skip))?;
-
-    rocket::custom(rocket_config)
-        .mount("/", rocket::routes![])
-        .launch();
-
-    println!("duck");
-
-    let _res = streaming_thread.join();
+    stream_loop(cfg);
 
     Ok(())
 }
