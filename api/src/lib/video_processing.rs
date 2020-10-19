@@ -1,10 +1,11 @@
+use crate::Url;
 use std::error::Error;
 use std::io::Write;
 use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
 
-pub fn extract_url(url: &str) -> Result<String, Box<dyn Error>> {
-    let output = YoutubeDl::new(url)
+pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
+    let output = YoutubeDl::new(&url.url)
         .socket_timeout("15")
         .format("best")
         .run()?;
@@ -15,12 +16,12 @@ pub fn extract_url(url: &str) -> Result<String, Box<dyn Error>> {
     };
 
     match video.url {
-        Some(url) => Ok(url),
+        Some(url) => Ok(Url::new(url)),
         None => Err("Something is fucked".into()),
     }
 }
 
-pub fn stream(url: &str, volume: i32) -> Result<Popen, Box<dyn Error>> {
+pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
     let url = extract_url(url)?;
 
     let p = Popen::create(
@@ -30,7 +31,7 @@ pub fn stream(url: &str, volume: i32) -> Result<Popen, Box<dyn Error>> {
             "-r",
             "-o",
             "both",
-            &url,
+            &url.url,
             "--vol",
             &volume.to_string(),
         ],
