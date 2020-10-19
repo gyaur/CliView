@@ -1,7 +1,7 @@
 use lib::Config as CliViewConfig;
 use lib::GenericResult as Result;
 use lib::Url;
-use lib::{extract_url, stream, write_to_stdin};
+use lib::{stream, write_to_stdin};
 // use reqwest;
 use std::thread::sleep;
 use std::time::Duration;
@@ -9,11 +9,11 @@ use std::time::Duration;
 fn stream_loop(cfg: CliViewConfig) -> Result<()> {
     loop {
         // get next video from squeue service
-        let address: &str = &format!("localhost:{}", cfg.queue_port);
+        let address: &str = &format!("localhost:{}/front", cfg.queue_port);
         let curr = reqwest::blocking::get(address)?.json::<Option<Url>>()?;
         if let Some(url) = curr.clone() {
             //start process
-            let mut process = stream(&extract_url(&url.url).unwrap(), 0).unwrap();
+            let mut process = stream(&url, 0).unwrap();
             sleep(cfg.playback_start_timeout);
             write_to_stdin(&mut process, "p")?;
             sleep(cfg.playback_loadscreen_timeout);
@@ -36,7 +36,7 @@ fn stream_loop(cfg: CliViewConfig) -> Result<()> {
 
 fn main() -> Result<()> {
     let cfg = CliViewConfig::load()?;
-    stream_loop(cfg);
+    stream_loop(cfg)?;
 
     Ok(())
 }
