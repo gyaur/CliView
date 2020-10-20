@@ -1,0 +1,73 @@
+name: Rust Continuous integration
+
+on:
+  push:
+    branches: [master, api_dev]
+
+env:
+  CARGO_TERM_COLOR: always
+
+  jobs:
+    check:
+      name: Check
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+        - name: Cd into api directory
+          run: cd api
+        - uses: actions-rs/cargo@v1
+          with:
+            command: check
+
+    test:
+      name: Test Suite
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+        - name: Cd into api directory
+          run: cd api
+        - uses: actions-rs/cargo@v1
+          with:
+            command: test
+
+    fmt:
+      name: Rustfmt
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+        - run: rustup component add rustfmt
+        - name: Cd into api directory
+          run: cd api
+        - uses: actions-rs/cargo@v1
+          with:
+            command: fmt
+            args: --all -- --check
+
+    clippy:
+      name: Clippy
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: nightly
+            override: true
+        - run: rustup component add clippy
+        - name: Cd into api directory
+          run: cd api
+        - uses: actions-rs/cargo@v1
+          with:
+            command: clippy
+            args: -- -D warnings
