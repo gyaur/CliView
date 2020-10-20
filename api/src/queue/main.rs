@@ -4,7 +4,6 @@ use lib::GenericResult as Result;
 use lib::QueueState;
 use lib::Url;
 use lib::{extract_url, QueueStateSendable};
-use rocket;
 use rocket::config::{Config, Environment};
 use rocket::http::Status;
 use rocket::State;

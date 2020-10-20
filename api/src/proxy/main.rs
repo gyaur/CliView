@@ -2,7 +2,6 @@
 use lib::gen_proxy_function;
 use lib::Config as CliViewConfig;
 use lib::GenericResult as Result;
-use rocket;
 use rocket::config::{Config, Environment};
 use rocket::response::Redirect;
 

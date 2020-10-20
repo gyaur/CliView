@@ -75,3 +75,9 @@ impl QueueState {
         QueueStateSendable::new(queue.iter().map(|x| x.to_owned()).collect::<Vec<Url>>())
     }
 }
+
+impl Default for QueueState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
