@@ -47,6 +47,6 @@ pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
 }
 
 pub fn write_to_stdin(process: &mut Popen, msg: &str) -> Result<(), Box<dyn Error>> {
-    process.stdin.as_mut().unwrap().write(msg.as_bytes())?;
+    process.stdin.as_mut().unwrap().write_all(msg.as_bytes())?;
     Ok(())
 }

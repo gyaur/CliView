@@ -19,7 +19,7 @@ fn stream_loop(cfg: CliViewConfig) -> Result<()> {
             sleep(cfg.playback_loadscreen_timeout);
             write_to_stdin(&mut process, "p")?;
             loop {
-                if let Some(val) = process.poll() {
+                if let Some(_val) = process.poll() {
                     break;
                 }
                 sleep(cfg.command_wait_timeout);

@@ -1,18 +1,19 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+use lib::gen_proxy_function;
 use lib::Config as CliViewConfig;
 use lib::GenericResult as Result;
-use rocket;
 use rocket::config::{Config, Environment};
 use rocket::response::Redirect;
 
-#[rocket::get("/queue")]
-fn queue_get() -> Redirect {
-    Redirect::to(format!("http://localhost:{}/queue", 5001))
-}
-//TODO: Write macros to do this for every function
+//Queue service functions
+gen_proxy_function!(queue_get, "/queue", get, 5001);
+gen_proxy_function!(queue_post, "/queue", post, 5001);
+
+//Commnad functions
+//TODO: Add command functions
 
 fn main() -> Result<()> {
-    let cfg = CliViewConfig::load()?;
+    let cfg: CliViewConfig = CliViewConfig::load()?;
     let rocket_config = Config::build(Environment::Staging)
         .address("127.0.0.1")
         .port(cfg.proxy_port)
@@ -20,7 +21,7 @@ fn main() -> Result<()> {
         .unwrap();
 
     rocket::custom(rocket_config)
-        .mount("/", rocket::routes![queue_get])
+        .mount("/", rocket::routes![queue_get, queue_post])
         .launch();
 
     Ok(())

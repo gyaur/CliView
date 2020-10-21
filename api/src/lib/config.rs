@@ -1,4 +1,3 @@
-use confy;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
