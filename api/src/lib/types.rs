@@ -43,7 +43,7 @@ impl Ammount {
     }
 }
 
-#[derive(Debug, Clone,Serialize,Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Action {
     Stream(Url),
     Skip,
