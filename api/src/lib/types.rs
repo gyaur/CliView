@@ -26,6 +26,12 @@ impl Volume {
     }
 }
 
+impl Default for Volume {
+    fn default() -> Self {
+        Self { volume: 0 }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Ammount {
     pub ammount: i32,
@@ -37,8 +43,8 @@ impl Ammount {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum Event {
+#[derive(Debug, Clone,Serialize,Deserialize)]
+pub enum Action {
     Stream(Url),
     Skip,
     VolumeUp,
@@ -77,6 +83,48 @@ impl QueueState {
 }
 
 impl Default for QueueState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CommandQueue {
+    pub queue: Mutex<VecDeque<Action>>,
+    pub volume: Mutex<Volume>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CommandQueueSendable {
+    pub queue: Vec<Action>,
+    pub volume: Volume,
+}
+
+impl CommandQueueSendable {
+    pub fn new(queue: Vec<Action>, volume: Volume) -> Self {
+        Self { queue, volume }
+    }
+}
+
+impl CommandQueue {
+    pub fn new() -> Self {
+        Self {
+            queue: Mutex::from(VecDeque::new()),
+            volume: Mutex::from(Volume::default()),
+        }
+    }
+    pub fn to_response(&self) -> CommandQueueSendable {
+        let queue = self.queue.lock().unwrap();
+        let volume = self.volume.lock().unwrap();
+
+        CommandQueueSendable::new(
+            queue.iter().map(|x| x.to_owned()).collect::<Vec<Action>>(),
+            Volume::new(volume.volume),
+        )
+    }
+}
+
+impl Default for CommandQueue {
     fn default() -> Self {
         Self::new()
     }
