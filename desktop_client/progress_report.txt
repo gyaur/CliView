@@ -1,0 +1,3 @@
+10.24:	Reselected technology for the desktop application, designed the basic layout of the program, 
+	implemented said layout and added progress report to git.
+	
