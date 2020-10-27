@@ -6,13 +6,18 @@ const Player = () => {
 
 	return (
 		<View style={styles.playerStyle}>
-			<TouchableOpacity style={styles.backwardButton}>
+			<TouchableOpacity
+				style={styles.backwardButton}
+				onPress={() => { console.log('10 sec backwords') }}
+			>
 				<AntDesign name="banckward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.playButtonStyle}>
+			<TouchableOpacity style={styles.playButtonStyle}
+				onPress={() => { console.log('Play') }}>
 				<AntDesign name="play" size={55} color="#c8d6e5" />
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.forwardButton}>
+			<TouchableOpacity style={styles.forwardButton}
+				onPress={() => { console.log('10 sec forward') }}>
 				<AntDesign name="forward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
 
@@ -23,7 +28,7 @@ const Player = () => {
 
 const styles = StyleSheet.create({
 	playerStyle: {
-		marginTop:50,
+		marginTop: 50,
 		flexDirection: "row",
 	},
 	playButtonStyle: {
@@ -31,7 +36,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 15,
 		borderRadius: 80
-		
+
 	},
 	forwardButton: {
 		alignItems: "center",
