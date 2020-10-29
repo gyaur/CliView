@@ -2,32 +2,44 @@ import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
 
 class Functionality:
-    def __init__() :
-        pass
+    def __init__(self) :
+        self.links = []
+        self.commands = {"--cast"  : self.cmd_cast,
+                         "--prev"  : self.previous,
+                         "--next"  : self.next,
+                         "--mcast" : self.cmd_list
+                         }
 
-    def error(msg:str) :
+    def error(self, msg:str) :
         messagebox.showerror(title="Error", message=msg)
     
-    def upload(tkList:tk.Listbox, link:str):
+    def upload(self, tkList:tk.Listbox, link:str):
         tkList.insert("end", link)
 
-    def cast(tkList:tk.Listbox) :
+    def cast(self, tkList:tk.Listbox) :
         link = tkList.get(0)
         tkList.delete(0)
         print(f"{link} is being cast.")
 
-    def previous():
+    def cmd_list(self, links : list):
+        self.links = links
+        print(self.links)
+    
+    def cmd_cast(self, link:list) :
+        print(f"{link[0]} is being cast.")
+
+    def previous(self):
         print("The previous video")
 
-    def next():
+    def next(self):
         print("The next video")
 
-    def save_links(tkList:tk.Listbox):
+    def save_links(self, tkList:tk.Listbox):
         with filedialog.asksaveasfile(mode='w', defaultextension=".txt") as file:
             data  = tkList.get(0, "end")
             file.write("\n".join(data))
     
-    def scroll_video(command:str, btn:ttk.Button = None) :
+    def scroll_video(self, command:str, btn:ttk.Button = None) :
         def bbb() : print("Turn back 30s")
         def bb()  : print("Turn back 10s")
         def ff()  : print("Forward 10s")
