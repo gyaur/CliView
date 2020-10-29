@@ -1,3 +1,10 @@
-10.24:	Reselected technology for the desktop application, designed the basic layout of the program, 
+10.24:
+	Reselected technology for the desktop application, designed the basic layout of the program, 
 	implemented said layout and added progress report to git.
+
+10.29:
+	-Created the command line interface for the desktop application.
+	-Separated the cmd and gui interfaces.
+	-Organized the code according to the OOM standards.
+	-Handled new error cases, like empty link list etc...
 	
