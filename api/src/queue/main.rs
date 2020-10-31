@@ -59,11 +59,9 @@ mod test {
     use lib::Config as CliViewConfig;
     use lib::QueueStateSendable;
     use lib::Url;
-    use rocket;
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
-    use serde_json;
 
     fn setup_rocket_test_client() -> Client {
         let cfg = CliViewConfig::load().unwrap();

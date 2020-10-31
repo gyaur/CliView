@@ -48,8 +48,7 @@ pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
 }
 
 #[cfg(target_arch = "x86_64")]
-pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
-    let url = extract_url(url)?;
+pub fn stream(_url: &Url, _volume: i32) -> Result<Popen, Box<dyn Error>> {
     let argv = &["ping","-c","10", "8.8.8.8"];
 
     let p = Popen::create(

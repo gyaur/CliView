@@ -1,3 +1,6 @@
+use subprocess::Popen;
+use crate::{Ammount, Url, Volume};
+
 pub trait Player {
     fn start(process: Popen, media: Url, volume: Volume);
     fn stop(process: Popen);
