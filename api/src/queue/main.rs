@@ -34,10 +34,11 @@ fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
 }
 
 fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
-    let rocket_config = Config::build(Environment::Staging)
-        .address("127.0.0.1")
+    let rocket_config = Config::build(Environment::Development)
+        .address("0.0.0.0")
         .port(cfg.queue_port)
         .workers(cfg.num_workers)
+        .finalize()
         .unwrap();
 
     rocket::custom(rocket_config)
