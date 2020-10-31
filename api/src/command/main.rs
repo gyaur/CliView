@@ -8,6 +8,12 @@ use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
 
+#[rocket::get("/front")]
+fn front(state: State<CommandQueue>) -> Json<Option<Action>> {
+    let mut queue = state.queue.lock().unwrap();
+    Json(queue.pop_front())
+}
+
 #[rocket::post("/stream", data = "<url>")]
 fn stream(state: State<CommandQueue>, url: Json<Url>) {
     let mut queue = state.queue.lock().unwrap();
@@ -73,10 +79,11 @@ fn skip(state: State<CommandQueue>) {
 }
 
 fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
-    let rocket_config = Config::build(Environment::Staging)
-        .address("127.0.0.1")
+    let rocket_config = Config::build(Environment::Development)
+        .address("0.0.0.0")
         .port(cfg.command_port)
         .workers(cfg.num_workers)
+        .finalize()
         .unwrap();
 
     rocket::custom(rocket_config)
@@ -89,7 +96,8 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
                 get_volume,
                 stream,
                 seek,
-                skip
+                skip,
+                front
             ],
         )
         .manage(CommandQueue::new())
