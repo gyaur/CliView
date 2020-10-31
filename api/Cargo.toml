@@ -16,7 +16,9 @@ rocket = "0.4"
 rocket_contrib = "0.4"
 confy = "0.4"
 reqwest = { version = "0.10", features = ["blocking", "json"] }
-#Needed for cross-compile
+
+
+[target.'cfg(arm)'.dependencies]
 openssl = { version = "0.10.30", features = ["vendored"] }
 
 [[bin]]
