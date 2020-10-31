@@ -9,19 +9,39 @@ use rocket::response::Redirect;
 gen_proxy_function!(queue_get, "/queue", get, 5001);
 gen_proxy_function!(queue_post, "/queue", post, 5001);
 
-//Commnad functions
-//TODO: Add command functions
+//Command service functions
+gen_proxy_function!(stream, "/stream", post, 5003);
+gen_proxy_function!(increase_volume, "/inc", post, 5003);
+gen_proxy_function!(lower_volume, "/dec", post, 5003);
+gen_proxy_function!(set_volume, "/volume", post, 5003);
+gen_proxy_function!(get_volume, "/volume", get, 5003);
+gen_proxy_function!(seek, "/seek", post, 5003);
+gen_proxy_function!(skip, "/skip", post, 5003);
 
 fn main() -> Result<()> {
     let cfg: CliViewConfig = CliViewConfig::load()?;
-    let rocket_config = Config::build(Environment::Staging)
-        .address("127.0.0.1")
+    let rocket_config = Config::build(Environment::Development)
+        .address("0.0.0.0")
         .port(cfg.proxy_port)
         .workers(cfg.num_workers)
+        .finalize()
         .unwrap();
 
     rocket::custom(rocket_config)
-        .mount("/", rocket::routes![queue_get, queue_post])
+        .mount(
+            "/",
+            rocket::routes![
+                queue_get,
+                queue_post,
+                stream,
+                increase_volume,
+                lower_volume,
+                set_volume,
+                get_volume,
+                seek,
+                skip
+            ],
+        )
         .launch();
 
     Ok(())
