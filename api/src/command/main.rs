@@ -64,8 +64,7 @@ fn get_volume(state: State<CommandQueue>) -> Json<Volume> {
 #[rocket::post("/seek", data = "<seek>")]
 fn seek(state: State<CommandQueue>, seek: Json<Ammount>) -> Status {
     let mut queue = state.queue.lock().unwrap();
-    //TODO: Add function to actually check
-    if seek.ammount == 0 {
+    if (seek.ammount % 600) % 30 != 0 || seek.ammount <= 0 {
         return Status::BadRequest;
     }
     queue.push_back(Action::Seek(seek.0));
