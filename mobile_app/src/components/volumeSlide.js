@@ -11,7 +11,28 @@ const VolumeSlide = () => {
     <View style={styles.slideContainerStyle}>
       <TouchableOpacity
         style={styles.iconStyle}
-        onPress={() => { setSliderValue(0) }} >
+        onPress={() => {
+          if (sliderValue === 0) {
+            setSliderValue(70);
+            jsonServer.post('/test', {/*sliderValue*/})
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+          else {
+            setSliderValue(0);
+            jsonServer.post('/test', {/*sliderValue*/})
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        }} >
         {sliderValue === 0 ?
           <FontAwesome5 name="volume-mute" size={24} color="#c8d6e5" /> :
           <FontAwesome name="volume-up" size={24} color="#c8d6e5" />
@@ -31,7 +52,16 @@ const VolumeSlide = () => {
         onValueChange={
           (sliderValue) => setSliderValue(sliderValue)
         }
-        onSlidingComplete={() => { console.log('volume should be updated to :', sliderValue) }}
+        onSlidingComplete={() => { 
+          //console.log('volume should be updated to :', sliderValue) 
+          jsonServer.post('/test', {/*sliderValue*/})
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+        }}
       />
 
 

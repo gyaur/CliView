@@ -8,16 +8,47 @@ const Player = () => {
 		<View style={styles.playerStyle}>
 			<TouchableOpacity
 				style={styles.backwardButton}
-				onPress={() => { console.log('10 sec backwords') }}
+				onPress={() => {
+					jsonServer.post('/test', {/*10secBack*/ })
+						.then(function (response) {
+							console.log(response);
+						})
+						.catch(function (error) {
+							console.log(error);
+						})
+					//console.log('10 sec backwords') 
+				}}
 			>
 				<AntDesign name="banckward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
+		
+		
 			<TouchableOpacity style={styles.playButtonStyle}
-				onPress={() => { console.log('Play') }}>
+				onPress={() => { 
+					jsonServer.post('/test', {/*play*/ })
+					.then(function (response) {
+						console.log(response);
+					})
+					.catch(function (error) {
+						console.log(error);
+					})
+					//console.log('Play') 
+					}}>
 				<AntDesign name="play" size={55} color="#c8d6e5" />
 			</TouchableOpacity>
+			
+			
 			<TouchableOpacity style={styles.forwardButton}
-				onPress={() => { console.log('10 sec forward') }}>
+				onPress={() => { 
+					jsonServer.post('/test', {/*10secForward*/ })
+					.then(function (response) {
+						console.log(response);
+					})
+					.catch(function (error) {
+						console.log(error);
+					})
+					//console.log('10 sec forward') 
+					}}>
 				<AntDesign name="forward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
 

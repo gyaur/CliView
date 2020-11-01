@@ -4,7 +4,7 @@ import SearchBar from '../components/searchBar';
 import Player from '../components/player';
 import VolumeSlide from '../components/volumeSlide';
 import { Entypo } from '@expo/vector-icons';
-
+import jsonServer from '../api/jsonServer'
 
 const HomeScreen = () => {
 
@@ -20,8 +20,14 @@ const HomeScreen = () => {
         link={link}
         onLinkChange={newLink => setLink(newLink)}
         onLinkSubmit={() =>
-          //casting function here 
-          console.log("link submitted : ", link)
+          jsonServer.post('/test', {/*data*/ })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+          //console.log("link submitted : ", link)
         }
       />
 
@@ -32,7 +38,14 @@ const HomeScreen = () => {
           color="#576574"
           onPress={() => {
             //casting function here 
-            console.log("link submitted : ", link)
+            jsonServer.post('/test', {/*data*/})
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+            //console.log("link submitted : ", link)
           }}
         />
       </View >
@@ -40,10 +53,21 @@ const HomeScreen = () => {
       <Player />
 
       <View style={styles.slidecontainer}>
+        
         <VolumeSlide />
+
         <TouchableOpacity
           style={styles.fullSreenIcon}
-          onPress={() => { console.log('full screen ') }} >
+          onPress={() => { 
+            jsonServer.post('/test', {/*fullScreen*/})
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+            //console.log('full screen ') 
+            }} >
           <Entypo name="resize-full-screen" size={24} color="#c8d6e5" />
         </TouchableOpacity>
       </View>
