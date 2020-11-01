@@ -41,6 +41,18 @@ impl Ammount {
     pub fn new(ammount: i32) -> Self {
         Self { ammount }
     }
+
+    pub fn as_vec_of_seconds(self) -> Vec<i32> {
+        let positve = self.ammount > 0;
+        let mut abs_ammount = self.ammount.abs();
+        let num_big = abs_ammount / 600;
+        abs_ammount -= num_big * 600;
+        let num_small = abs_ammount / 30;
+        std::iter::repeat(if positve { 600 } else { -600 })
+            .take(num_big as usize)
+            .chain(std::iter::repeat(if positve { 30 } else { -30 }).take(num_small as usize))
+            .collect()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
