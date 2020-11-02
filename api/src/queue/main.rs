@@ -1,8 +1,10 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+
 use lib::Config as CliViewConfig;
-use lib::GenericResult as Result;
+use lib::GenericResult;
 use lib::QueueState;
 use lib::Url;
+use lib::{establish_connection, init_db, select_values, update_db};
 use lib::{extract_url, QueueStateSendable};
 use rocket::config::{Config, Environment};
 use rocket::http::Status;
@@ -12,7 +14,9 @@ use rocket_contrib::json::Json;
 #[rocket::get("/front")]
 fn front(state: State<QueueState>) -> Json<Option<Url>> {
     let mut queue = state.queue.lock().unwrap();
-    Json(queue.pop_front())
+    let value = queue.pop_front();
+    update_db(&queue.clone(), &mut establish_connection());
+    Json(value)
 }
 
 #[rocket::get("/queue")]
@@ -27,6 +31,7 @@ fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
         Ok(url) => {
             let mut queue = state.queue.lock().unwrap();
             queue.push_back(url);
+            update_db(&queue.clone(), &mut establish_connection());
             Status::Accepted
         }
         Err(_) => Status::BadRequest,
@@ -41,15 +46,19 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
         .finalize()
         .unwrap();
 
+    let mut em = establish_connection();
+    init_db(&mut em);
+    let state: QueueState = select_values(&mut em).into();
+
     rocket::custom(rocket_config)
         .mount("/", rocket::routes![front, queue_get, queue_post])
-        .manage(QueueState::new())
+        .manage(state)
 }
-fn main() -> Result<()> {
+fn main() -> GenericResult<()> {
     let cfg = CliViewConfig::load()?;
+
     let rocket = setup_rocket(cfg);
     rocket.launch();
-
     Ok(())
 }
 
