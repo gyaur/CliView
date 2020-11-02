@@ -1,17 +1,39 @@
+use rustorm::*;
+use rustorm::{FromDao, ToColumnNames, ToDao, ToTableName};
 use serde::{Deserialize, Serialize};
 use std::{collections::VecDeque, sync::Mutex};
 
 pub type Error = Box<dyn std::error::Error>;
 pub type GenericResult<T> = Result<T, Error>;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Serialize, Deserialize, PartialEq, ToDao, ToColumnNames, ToTableName, FromDao,
+)]
 pub struct Url {
+    pub url: String,
+}
+
+#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
+pub struct RetriveUrl {
+    pub id: i32,
     pub url: String,
 }
 
 impl Url {
     pub fn new(url: String) -> Self {
         Self { url }
+    }
+}
+
+impl From<String> for Url {
+    fn from(inc: String) -> Self {
+        Url { url: inc }
+    }
+}
+
+impl From<RetriveUrl> for Url {
+    fn from(inc: RetriveUrl) -> Self {
+        Url::from(inc.url)
     }
 }
 
@@ -90,6 +112,13 @@ impl QueueState {
         let queue = self.queue.lock().unwrap();
 
         QueueStateSendable::new(queue.iter().map(|x| x.to_owned()).collect::<Vec<Url>>())
+    }
+}
+
+impl From<Vec<Url>> for QueueState {
+    fn from(urls: Vec<Url>) -> Self {
+        let queue: Mutex<VecDeque<Url>> = Mutex::new(urls.into_iter().collect());
+        QueueState { queue }
     }
 }
 
