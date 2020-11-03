@@ -21,7 +21,7 @@ jobs:
     - name: Install cross
       run: cargo install cross
     - name: Build with cross for raspberry pi
-      run: cross build --release --target armv7-unknown-linux-gnueabihf
+      run: cd api && cross build --release --target armv7-unknown-linux-gnueabihf
     - name: Bump version and push tag/create release point
       uses: anothrNick/github-tag-action@1.17.2
       env:
