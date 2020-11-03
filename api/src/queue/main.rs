@@ -1,8 +1,10 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+
 use lib::Config as CliViewConfig;
-use lib::GenericResult as Result;
+use lib::GenericResult;
 use lib::QueueState;
 use lib::Url;
+use lib::{establish_connection, init_db, select_values, update_db};
 use lib::{extract_url, QueueStateSendable};
 use rocket::config::{Config, Environment};
 use rocket::http::Status;
@@ -12,7 +14,9 @@ use rocket_contrib::json::Json;
 #[rocket::get("/front")]
 fn front(state: State<QueueState>) -> Json<Option<Url>> {
     let mut queue = state.queue.lock().unwrap();
-    Json(queue.pop_front())
+    let value = queue.pop_front();
+    update_db(&queue.clone(), &mut establish_connection());
+    Json(value)
 }
 
 #[rocket::get("/queue")]
@@ -27,46 +31,52 @@ fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
         Ok(url) => {
             let mut queue = state.queue.lock().unwrap();
             queue.push_back(url);
+            update_db(&queue.clone(), &mut establish_connection());
             Status::Accepted
         }
         Err(_) => Status::BadRequest,
     }
 }
 
-fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
-    let rocket_config = Config::build(Environment::Staging)
-        .address("127.0.0.1")
+fn setup_rocket(cfg: CliViewConfig, test: bool) -> rocket::Rocket {
+    let rocket_config = Config::build(Environment::Development)
+        .address("0.0.0.0")
         .port(cfg.queue_port)
         .workers(cfg.num_workers)
+        .finalize()
         .unwrap();
+
+    let mut state = QueueState::new();
+    if !test {
+        let mut em = establish_connection();
+        init_db(&mut em);
+        state = select_values(&mut em).into();
+    }
 
     rocket::custom(rocket_config)
         .mount("/", rocket::routes![front, queue_get, queue_post])
-        .manage(QueueState::new())
+        .manage(state)
 }
-fn main() -> Result<()> {
+fn main() -> GenericResult<()> {
     let cfg = CliViewConfig::load()?;
-    let rocket = setup_rocket(cfg);
+    let rocket = setup_rocket(cfg, false);
     rocket.launch();
-
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
     use super::setup_rocket;
-    use lib::Config as CliViewConfig;
-    use lib::QueueStateSendable;
     use lib::Url;
-    use rocket;
+    use lib::{establish_test_connection, Config as CliViewConfig};
+    use lib::{select_values, QueueStateSendable};
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
-    use serde_json;
 
     fn setup_rocket_test_client() -> Client {
         let cfg = CliViewConfig::load().unwrap();
-        Client::new(setup_rocket(cfg)).expect("valid rocket instance")
+        Client::new(setup_rocket(cfg, true)).expect("valid rocket instance")
     }
     #[test]
     fn test_empty_queue() {
@@ -88,6 +98,13 @@ mod test {
             .header(ContentType::JSON)
             .dispatch();
         assert_eq!(response.status(), Status::Accepted);
+
+        let mut response = client.get("/queue").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.content_type(), Some(ContentType::JSON));
+        let state =
+            serde_json::from_str::<QueueStateSendable>(&response.body_string().unwrap()).unwrap();
+        assert!(state.queue.len() == 1);
     }
 
     #[test]
@@ -99,6 +116,13 @@ mod test {
             .header(ContentType::JSON)
             .dispatch();
         assert_eq!(response.status(), Status::BadRequest);
+
+        let mut response = client.get("/queue").dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.content_type(), Some(ContentType::JSON));
+        let state =
+            serde_json::from_str::<QueueStateSendable>(&response.body_string().unwrap()).unwrap();
+        assert!(state.queue.is_empty());
     }
 
     #[test]
