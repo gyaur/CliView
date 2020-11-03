@@ -1,0 +1,48 @@
+[package]
+name = "api"
+version = "0.1.0"
+authors = ["Bálint Gyarmathy <bulint1@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[dependencies]
+subprocess = "0.2"
+youtube_dl = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rocket = "0.4"
+confy = "0.4"
+dotenv = "0.15"
+rustorm = { version = "0.17", features = ["with-sqlite"] }
+reqwest = { version = "0.10", features = ["blocking", "json"] }
+
+[dependencies.rocket_contrib]
+version = "0.4.5"
+default-features = false
+features = ["json"]
+
+
+[target.'cfg(arm)'.dependencies]
+openssl = { version = "0.10.30", features = ["vendored"] }
+
+[[bin]]
+name = "queue"
+path = "src/queue/main.rs"
+
+[[bin]]
+name = "streamer"
+path = "src/streamer/main.rs"
+
+[[bin]]
+name = "proxy"
+path = "src/proxy/main.rs"
+
+[[bin]]
+name = "command"
+path = "src/command/main.rs"
+
+[lib]
+name = "lib"
+path = "src/lib/lib.rs"
