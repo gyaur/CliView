@@ -20,6 +20,8 @@ jobs:
         override: true
     - name: Install cross
       run: cargo install cross
+    - name: Create docker image for build
+      run: cd api && docker build -t my/cross:latest . 
     - name: Build with cross for raspberry pi
       run: cd api && cross build --release --target armv7-unknown-linux-gnueabihf
     - name: Bump version and push tag/create release point
