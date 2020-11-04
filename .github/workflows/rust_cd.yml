@@ -34,28 +34,28 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/armv7-unknown-linux-gnueabihf/release/proxy
+        file: api/target/armv7-unknown-linux-gnueabihf/release/proxy
         asset_name: proxy
         tag: ${{ steps.bump_version.outputs.new_tag }}
     - name: Upload queue binary to release
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/armv7-unknown-linux-gnueabihf/release/queue
+        file: api/target/armv7-unknown-linux-gnueabihf/release/queue
         asset_name: queue
         tag: ${{ steps.bump_version.outputs.new_tag }}
     - name: Upload command binary to release
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/armv7-unknown-linux-gnueabihf/release/command
+        file: api/target/armv7-unknown-linux-gnueabihf/release/command
         asset_name: command
         tag: ${{ steps.bump_version.outputs.new_tag }}
     - name: Upload streamer binary to release
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/armv7-unknown-linux-gnueabihf/release/streamer
+        file: api/target/armv7-unknown-linux-gnueabihf/release/streamer
         asset_name: streamer
         tag: ${{ steps.bump_version.outputs.new_tag }}
     
