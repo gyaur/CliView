@@ -17,7 +17,7 @@ fn front(state: State<CommandQueue>) -> Json<Option<Action>> {
 #[rocket::post("/stream", data = "<url>")]
 fn stream(state: State<CommandQueue>, url: Json<Url>) {
     let mut queue = state.queue.lock().unwrap();
-    queue.push_back(Action::Stream(url.0));
+    queue.push_front(Action::Stream(url.0));
 }
 
 #[rocket::post("/inc")]
