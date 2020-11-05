@@ -28,7 +28,14 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                     match cmd {
                         Action::Skip => player.skip(&mut process),
                         Action::Seek(ammount) => player.seek(&mut process, ammount),
-                        Action::Stream(url) => todo!(),
+                        Action::Stream(url) => {
+                            player.stop(&mut process);
+                            process = player.start(&url, &volume)?;
+                            sleep(cfg.playback_start_timeout);
+                            player.pause(&mut process);
+                            sleep(cfg.playback_loadscreen_timeout);
+                            player.play(&mut process);
+                        }
                         Action::VolumeDown => player.decrease_volume(&mut process),
                         Action::VolumeUp => player.increase_volume(&mut process),
                         Action::VolumeSet(vol) => player.set_volume(&mut process, vol),
