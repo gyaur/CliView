@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import jsonServer from '../api/jsonServer'
+
 
 const VolumeSlide = () => {
 
@@ -14,7 +16,7 @@ const VolumeSlide = () => {
         onPress={() => {
           if (sliderValue === 0) {
             setSliderValue(70);
-            jsonServer.post('/test', {/*sliderValue*/})
+            jsonServer.post('/test', {/*op : "unmute"*/})
               .then(function (response) {
                 console.log(response);
               })
@@ -24,7 +26,7 @@ const VolumeSlide = () => {
           }
           else {
             setSliderValue(0);
-            jsonServer.post('/test', {/*sliderValue*/})
+            jsonServer.post('/test', {/*op : "mute"*/})
               .then(function (response) {
                 console.log(response);
               })
@@ -54,7 +56,7 @@ const VolumeSlide = () => {
         }
         onSlidingComplete={() => { 
           //console.log('volume should be updated to :', sliderValue) 
-          jsonServer.post('/test', {/*sliderValue*/})
+          jsonServer.post('/test', {volume : sliderValue})
               .then(function (response) {
                 console.log(response);
               })

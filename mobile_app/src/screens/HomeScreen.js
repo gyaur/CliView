@@ -45,7 +45,7 @@ const HomeScreen = () => {
               .catch(function (error) {
                 console.log(error);
               })
-            //console.log("link submitted : ", link)
+            console.log("link submitted : ", link)
           }}
         />
       </View >
@@ -59,14 +59,14 @@ const HomeScreen = () => {
         <TouchableOpacity
           style={styles.fullSreenIcon}
           onPress={() => { 
-            jsonServer.post('/test', {/*fullScreen*/})
+            jsonServer.post('/test', {/*op : "fullScreen"*/})
               .then(function (response) {
                 console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
               });
-            //console.log('full screen ') 
+            console.log('full screen ') 
             }} >
           <Entypo name="resize-full-screen" size={24} color="#c8d6e5" />
         </TouchableOpacity>

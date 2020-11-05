@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import jsonServer from '../api/jsonServer'
 
 const Player = () => {
 
@@ -40,7 +41,7 @@ const Player = () => {
 			
 			<TouchableOpacity style={styles.forwardButton}
 				onPress={() => { 
-					jsonServer.post('/test', {/*10secForward*/ })
+					jsonServer.post('/test', { op : "/*10secForward*/" })
 					.then(function (response) {
 						console.log(response);
 					})
