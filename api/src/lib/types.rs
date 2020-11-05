@@ -54,7 +54,7 @@ impl Default for Volume {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
 pub struct Ammount {
     pub ammount: i32,
 }
@@ -167,5 +167,36 @@ impl CommandQueue {
 impl Default for CommandQueue {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::Ammount;
+    #[test]
+    fn test_ammount_as_vec_of_seconds() {
+        let test_ammounts = vec![
+            Ammount::new(0),
+            Ammount::new(30),
+            Ammount::new(120),
+            Ammount::new(570),
+            Ammount::new(1230),
+            Ammount::new(-30),
+            Ammount::new(-120),
+            Ammount::new(-570),
+            Ammount::new(-1230),
+        ];
+
+        //Check if the sums are correct
+        assert!(test_ammounts
+            .iter()
+            .all(|x| x.as_vec_of_seconds().sum::<i32>() == x.ammount));
+
+        //Check wether the 30s add up to 600
+        assert!(test_ammounts.iter().all(|x| x
+            .as_vec_of_seconds()
+            .filter(|y| y.abs() == 30)
+            .sum::<i32>()
+            < 600));
     }
 }
