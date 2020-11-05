@@ -93,7 +93,7 @@ mod test {
         let mut process = init_popen();
         let msg = "any message";
         write_to_stdin(&mut process, msg).unwrap();
-        let (stdout,_) = process.communicate(Some("")).unwrap();
+        let (stdout, _) = process.communicate(Some("")).unwrap();
         assert!(stdout.unwrap().as_str() == msg)
     }
 }
