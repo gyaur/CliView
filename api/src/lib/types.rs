@@ -7,7 +7,7 @@ pub type Error = Box<dyn std::error::Error>;
 pub type GenericResult<T> = Result<T, Error>;
 
 #[derive(
-    Debug, Clone, Serialize, Deserialize, PartialEq, ToDao, ToColumnNames, ToTableName, FromDao,
+    Debug, Clone, Serialize, Deserialize, ToDao, ToColumnNames, ToTableName, FromDao, PartialEq,
 )]
 pub struct Url {
     pub url: String,
@@ -37,7 +37,7 @@ impl From<RetriveUrl> for Url {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Volume {
     pub volume: i32,
 }
@@ -54,7 +54,7 @@ impl Default for Volume {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Copy)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
 pub struct Ammount {
     pub ammount: i32,
 }
@@ -76,7 +76,7 @@ impl Ammount {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Action {
     Stream(Url),
     Skip,
