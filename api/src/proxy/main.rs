@@ -15,6 +15,9 @@ gen_proxy_function!(queue_post, "/queue", post, queue_port);
 
 //Command service functions
 gen_proxy_function!(stream, "/stream", post, command_port);
+gen_proxy_function!(pause, "/pause", post, command_port);
+gen_proxy_function!(play, "/play", post, command_port);
+gen_proxy_function!(playback, "/playback", get, command_port);
 gen_proxy_function!(increase_volume, "/inc", post, command_port);
 gen_proxy_function!(lower_volume, "/dec", post, command_port);
 gen_proxy_function!(set_volume, "/volume", post, command_port);
@@ -43,7 +46,9 @@ fn setup_rocket() -> Result<Rocket> {
                 set_volume,
                 get_volume,
                 seek,
-                skip
+                skip,
+                play,
+                pause
             ],
         )
         .manage(cfg);
