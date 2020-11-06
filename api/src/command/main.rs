@@ -1,7 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-use lib::Ammount;
 use lib::Url;
 use lib::{Action, GenericResult as Result, Volume};
+use lib::{Ammount, PlaybackStatus};
 use lib::{CommandQueue, Config as CliViewConfig};
 use rocket::config::{Config, Environment};
 use rocket::http::Status;
@@ -12,6 +12,24 @@ use rocket_contrib::json::Json;
 fn front(state: State<CommandQueue>) -> Json<Option<Action>> {
     let mut queue = state.queue.lock().unwrap();
     Json(queue.pop_front())
+}
+
+#[rocket::post("/play")]
+fn play(state: State<CommandQueue>) {
+    let mut queue = state.queue.lock().unwrap();
+    queue.push_front(Action::Play);
+}
+
+#[rocket::post("/pause")]
+fn pause(state: State<CommandQueue>) {
+    let mut queue = state.queue.lock().unwrap();
+    queue.push_front(Action::Pause);
+}
+
+#[rocket::get("/playback")]
+fn playback(state: State<CommandQueue>) -> Json<PlaybackStatus> {
+    let playback_status = state.playback_state.lock().unwrap();
+    Json(PlaybackStatus::new(playback_status.status))
 }
 
 #[rocket::post("/stream", data = "<url>")]
@@ -96,7 +114,9 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
                 stream,
                 seek,
                 skip,
-                front
+                front,
+                play,
+                pause
             ],
         )
         .manage(CommandQueue::new())
