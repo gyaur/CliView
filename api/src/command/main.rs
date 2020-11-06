@@ -217,7 +217,6 @@ mod test {
         assert!(base_volume == 10);
         let response = client.post("/inc").dispatch();
         assert_eq!(response.status(), Status::BadRequest);
-
     }
 
     #[test]
