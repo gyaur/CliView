@@ -39,6 +39,8 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                         Action::VolumeDown => player.decrease_volume(&mut process),
                         Action::VolumeUp => player.increase_volume(&mut process),
                         Action::VolumeSet(vol) => player.set_volume(&mut process, vol),
+                        Action::Play => todo!(),
+                        Action::Pause => todo!(),
                     }
                 }
                 if let Some(_val) = process.poll() {

@@ -84,6 +84,8 @@ pub enum Action {
     VolumeDown,
     VolumeSet(Volume),
     Seek(Ammount),
+    Play,
+    Pause,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -127,22 +129,44 @@ impl Default for QueueState {
         Self::new()
     }
 }
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+pub struct PlaybackStatus {
+    pub status: bool,
+}
+
+impl PlaybackStatus {
+    pub fn new(status: bool) -> Self {
+        Self { status }
+    }
+}
+
+impl Default for PlaybackStatus {
+    fn default() -> Self {
+        Self::new(false)
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CommandQueue {
     pub queue: Mutex<VecDeque<Action>>,
     pub volume: Mutex<Volume>,
+    pub playback_state: Mutex<PlaybackStatus>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CommandQueueSendable {
     pub queue: Vec<Action>,
     pub volume: Volume,
+    pub playback_state: PlaybackStatus,
 }
 
 impl CommandQueueSendable {
-    pub fn new(queue: Vec<Action>, volume: Volume) -> Self {
-        Self { queue, volume }
+    pub fn new(queue: Vec<Action>, volume: Volume, playback_state: PlaybackStatus) -> Self {
+        Self {
+            queue,
+            volume,
+            playback_state,
+        }
     }
 }
 
@@ -151,15 +175,18 @@ impl CommandQueue {
         Self {
             queue: Mutex::from(VecDeque::new()),
             volume: Mutex::from(Volume::default()),
+            playback_state: Mutex::from(PlaybackStatus::default()),
         }
     }
     pub fn to_response(&self) -> CommandQueueSendable {
         let queue = self.queue.lock().unwrap();
         let volume = self.volume.lock().unwrap();
+        let playback_state = self.playback_state.lock().unwrap();
 
         CommandQueueSendable::new(
             queue.iter().map(|x| x.to_owned()).collect::<Vec<Action>>(),
             Volume::new(volume.volume),
+            PlaybackStatus::new(playback_state.status),
         )
     }
 }
