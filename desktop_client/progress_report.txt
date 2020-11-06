@@ -13,4 +13,14 @@
 	- Implemented the main feature functions like (cast, mcast, etc...)
 	- Tested the feature functions with the dummy server.
 	- Updated the README with relevant errors.
+
+11.06:
+	- Update the GUI with settings and load buttons
+	- Implemented the settings and the load functions. The settings allows the user to set the ip and the port values.
+	  The load function allows the user to load a previously saved playlist.
+	- Implemented the settings function for the CLI.
+	- Reorganized the Responder class and the consttanst.py.
+	- Added custom error management for the CLI.
+	- Handled more error cases for the GUI.
+	- Implemented volume settings for the GUI and CLI.
 	
