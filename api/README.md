@@ -9,7 +9,7 @@ All request and response bodies are empty unless specified otherwise
   * where url is either a youtube video or address of tcp server hosting a local file stream
 * Responses:
   * 200 - OK
-    * The video should start streaming interrupting any current content if neccessary
+    * Interrupts any current content and starts playing the video. Does not start playback if nothing is playing.
   * 400 - Bad Request
     * bad link or incorrect json
   * 500 - Internal server error
@@ -48,6 +48,32 @@ All request and response bodies are empty unless specified otherwise
   * 200 - OK
     * Decreases volume of playback by 1
   * 500 - Internal server error
+
+
+**/play [POST]**
+* Body: Empty
+* Responses:
+  * 200 - OK
+    * Starts playback
+  * 500 - Internal server error
+
+**/pause [POST]**
+* Body: Empty
+* Responses:
+  * 200 - OK
+    * Starts playback
+  * 500 - Internal server error
+
+
+**/playback [GET]**
+* Body: Empty
+* Responses:
+  * 200 - OK
+    * [json] `{"status": playback_status}`
+    * where playback status is true if a video is playing and false otherwise
+  * 500 - Internal server error
+
+
 
 **/volume [POST]**
 * Body: [json] `{"volume": volume}`
@@ -113,14 +139,3 @@ The api is split into 3 layers:
 1 Proxy layer
 2 Queueing, Command validation and preprocessing
 3 Streaming layer
-
-TODO:
-* Add tests
-* Add arch description
-* Possible watchdog layer to start the processes and handle crashes
-* Finish streamloop
-* Finish proxy
-* Finish queue
-* Finish command
-* Add CI/CD
-* More experimentation with docker
