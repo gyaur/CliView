@@ -48,7 +48,8 @@ fn setup_rocket() -> Result<Rocket> {
                 seek,
                 skip,
                 play,
-                pause
+                pause,
+                playback
             ],
         )
         .manage(cfg);
@@ -96,6 +97,9 @@ mod test {
 
     //Command service tests
     generate_test!(test_stream, command_port, post, "/stream");
+    generate_test!(test_play, command_port, post, "/play");
+    generate_test!(test_pause, command_port, post, "/pause");
+    generate_test!(test_playback, command_port, get, "/playback");
     generate_test!(test_increase_volume, command_port, post, "/inc");
     generate_test!(test_lower_volume, command_port, post, "/dec");
     generate_test!(test_volume_post, command_port, post, "/volume");

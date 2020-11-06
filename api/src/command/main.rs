@@ -116,7 +116,8 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
                 skip,
                 front,
                 play,
-                pause
+                pause,
+                playback
             ],
         )
         .manage(CommandQueue::new())
@@ -127,4 +128,9 @@ fn main() -> Result<()> {
     rocket.launch();
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test{
+    
 }
