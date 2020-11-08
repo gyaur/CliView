@@ -11,7 +11,7 @@ pub trait Player {
     fn seek(&self, process: &mut Popen, ammount: Ammount);
     fn increase_volume(&self, process: &mut Popen);
     fn decrease_volume(&self, process: &mut Popen);
-    fn set_volume(&self, process: &mut Popen, volume: Volume);
+    fn set_volume(&self, process: &mut Popen, volume: Volume, current_volume: &Volume);
 }
 
 pub struct OMXPlayer;
@@ -57,7 +57,14 @@ impl Player for OMXPlayer {
         write_to_stdin(process, "-");
     }
 
-    fn set_volume(&self, process: &mut Popen, volume: Volume) {
-        todo!()
+    fn set_volume(&self, mut process: &mut Popen, volume: Volume, current_volume: &Volume) {
+        let delta = current_volume.volume - volume.volume;
+        for _ in 0..delta.abs() {
+            if delta > 0 {
+                self.decrease_volume(&mut process);
+            } else {
+                self.increase_volume(&mut process);
+            }
+        }
     }
 }
