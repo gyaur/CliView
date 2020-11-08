@@ -259,7 +259,7 @@ mod test {
     #[test]
     fn test_positive_set_volume() {
         let (mut process, player) = init_player();
-        player.set_volume(&mut process,Volume::new(4),&Volume::new(0));
+        player.set_volume(&mut process, Volume::new(4), &Volume::new(0));
         let (stdout, _) = process.communicate(Some("")).unwrap();
         assert!(stdout.is_some());
         assert!(stdout.unwrap() == String::from("++++"));
@@ -268,7 +268,7 @@ mod test {
     #[test]
     fn test_negative_set_volume() {
         let (mut process, player) = init_player();
-        player.set_volume(&mut process,Volume::new(0),&Volume::new(4));
+        player.set_volume(&mut process, Volume::new(0), &Volume::new(4));
         let (stdout, _) = process.communicate(Some("")).unwrap();
         assert!(stdout.is_some());
         assert!(stdout.unwrap() == String::from("----"));
