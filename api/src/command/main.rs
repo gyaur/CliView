@@ -26,6 +26,12 @@ fn pause(state: State<CommandQueue>) {
     queue.push_front(Action::Pause);
 }
 
+#[rocket::post("/playback", data = "<playback>")]
+fn set_playback(state: State<CommandQueue>, playback: Json<PlaybackStatus>) {
+    let mut playback_status = state.playback_state.lock().unwrap();
+    playback_status.status = playback.status;
+}
+
 #[rocket::get("/playback")]
 fn playback(state: State<CommandQueue>) -> Json<PlaybackStatus> {
     let playback_status = state.playback_state.lock().unwrap();
@@ -118,7 +124,8 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
                 front,
                 play,
                 pause,
-                playback
+                playback,
+                set_playback
             ],
         )
         .manage(CommandQueue::new())
