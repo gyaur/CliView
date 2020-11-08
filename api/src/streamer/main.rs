@@ -45,7 +45,7 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                         }
                         Action::VolumeDown => player.decrease_volume(&mut process),
                         Action::VolumeUp => player.increase_volume(&mut process),
-                        Action::VolumeSet(vol) => player.set_volume(&mut process, vol, volume),
+                        Action::VolumeSet(vol) => player.set_volume(&mut process, vol, &volume),
                         Action::Play => {
                             if !playback_status {
                                 player.pause(&mut process);
