@@ -318,4 +318,22 @@ mod test {
             serde_json::from_str::<Option<Action>>(&response.body_string().unwrap()).unwrap();
         assert_eq!(action.unwrap(), Action::Skip);
     }
+
+    #[test]
+    fn test_set_playback() {
+        let client = setup_rocket_test_client();
+        let mut response = client.get("/playback").dispatch();
+        let status =
+            serde_json::from_str::<PlaybackStatus>(&response.body_string().unwrap()).unwrap();
+        assert!(!status.status);
+        let response = client
+            .post("/playback")
+            .body(r#"{"status": true}"#)
+            .dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        let mut response = client.get("/playback").dispatch();
+        let status =
+            serde_json::from_str::<PlaybackStatus>(&response.body_string().unwrap()).unwrap();
+        assert!(status.status);
+    }
 }
