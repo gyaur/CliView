@@ -13,7 +13,7 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
         let volume_address: &str = &format!("http://localhost:{}/volume", cfg.command_port);
         let playback_address: &str = &format!("http://localhost:{}/playback", cfg.command_port);
         let client = reqwest::blocking::Client::new();
-        let volume = reqwest::blocking::get(volume_address)?.json::<Volume>()?;
+        let mut volume = reqwest::blocking::get(volume_address)?.json::<Volume>()?;
         let curr = reqwest::blocking::get(queue_address)?.json::<Option<Url>>()?;
         // get next video from squeue service
         if let Some(url) = curr.clone() {
@@ -25,48 +25,23 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                 .json(&PlaybackStatus::new(playback_status))
                 .send()?;
             sleep(cfg.playback_start_timeout);
-            player.pause(&mut process);
+            player.pause(&mut process)?;
             sleep(cfg.playback_loadscreen_timeout);
-            player.play(&mut process);
+            player.play(&mut process)?;
             loop {
                 if let Some(cmd) =
                     reqwest::blocking::get(command_address)?.json::<Option<Action>>()?
                 {
-                    match cmd {
-                        Action::Skip => player.skip(&mut process),
-                        Action::Seek(ammount) => player.seek(&mut process, ammount),
-                        Action::Stream(url) => {
-                            player.stop(&mut process);
-                            process = player.start(&url, &volume)?;
-                            sleep(cfg.playback_start_timeout);
-                            player.pause(&mut process);
-                            sleep(cfg.playback_loadscreen_timeout);
-                            player.play(&mut process);
-                        }
-                        Action::VolumeDown => player.decrease_volume(&mut process),
-                        Action::VolumeUp => player.increase_volume(&mut process),
-                        Action::VolumeSet(vol) => player.set_volume(&mut process, vol, &volume),
-                        Action::Play => {
-                            if !playback_status {
-                                player.pause(&mut process);
-                                playback_status = true;
-                                client
-                                    .post(playback_address)
-                                    .json(&PlaybackStatus::new(playback_status))
-                                    .send()?;
-                            }
-                        }
-                        Action::Pause => {
-                            if playback_status {
-                                player.pause(&mut process);
-                                playback_status = false;
-                                client
-                                    .post(playback_address)
-                                    .json(&PlaybackStatus::new(playback_status))
-                                    .send()?;
-                            }
-                        }
-                    }
+                    let result = player.work(
+                        &mut process,
+                        &mut volume,
+                        &mut playback_status,
+                        &cmd,
+                        &client,
+                        &cfg,
+                        playback_address,
+                    );
+                    println!("{:?}", result);
                 }
                 if let Some(_val) = process.poll() {
                     break;
