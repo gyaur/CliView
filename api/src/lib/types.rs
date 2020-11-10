@@ -37,7 +37,7 @@ impl From<RetriveUrl> for Url {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Copy)]
 pub struct Volume {
     pub volume: i32,
 }
