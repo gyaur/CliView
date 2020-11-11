@@ -1,7 +1,9 @@
+import json
 import requests
 import tkinter as tk
 from tkinter   import messagebox, ttk, filedialog
-from constants import CAST, MCAST, NEXT, SCROLL, VOLUME
+from constants import MCAST, NEXT, SCROLL, VOLUME, P_STATUS, START, STOP, SETTINGS
+
 
 #This is the backend...
 class Functionality:
@@ -14,7 +16,9 @@ class Functionality:
                           "--mcast" : self.cmd_mcast,
                           "--scroll": self.cmd_scroll,
                           "--set"   : self.cmd_set,
-                          "--volume": self.cmd_volume
+                          "--volume": self.cmd_volume,
+                          "--start" : self.cmd_start,
+                          "--stop"  : self.cmd_stop
                          }
 
     def error(self, msg:str) :
@@ -23,22 +27,22 @@ class Functionality:
     def upload(self, tkList:tk.Listbox, link:str):
         tkList.insert("end", link)
 
-    #On the GUI cast the first link and add to queue the rest 
+    #Add all links to the queue
     def cast(self, tkList:tk.Listbox) :
-       
-       link = tkList.get(0)
-       self.cmd_cast([link])
-       self.cmd_mcast(tkList.get(1, "end"))
+        self.cmd_mcast(tkList.get(0, "end"))
     
     #It will cast the video at once
     def cmd_cast(self, link:list) :
-        self.responder.post(CAST, {"url": link[0]})
-
+        err = self.responder.post(MCAST, {"url": link[0]})
+        if err != 200:
+            raise CustomError(f"An error occurred, server response : {err}")
     
     #This will add all links to a queue
     def cmd_mcast(self, links:list) :
-        [ self.responder.post(MCAST, {"url": link}) for link in links]
-
+        codes = [ self.responder.post(MCAST, {"url": link}) for link in links]
+        res   = next(( (i,x) for (i,x) in enumerate(l) if x != 200), None)
+        if res != None :
+            raise CustomError(f"The {res[0]}. link could not be sent to the server. Error code : {res[1]}")
     
     def cmd_volume(self, value:list) :
         err = self.responder.post(VOLUME, {"volume": value[0]}) 
@@ -53,8 +57,28 @@ class Functionality:
         pass
 
     def next(self):
-        self.responder.post(NEXT)
+        err = self.responder.post(NEXT)
+        if err != 200 :
+            raise CustomError(f"An error occurred, server response : {err}")
 
+    #Return true if music playing false otherwise
+    def is_music_playing(self) -> bool:
+        msg, err = self.responder.get(P_STATUS)
+        if (err != 200) :
+             raise CustomError(f"An error occurred, server response : {err}")
+
+        return msg["status"]
+    
+    def cmd_start(self):
+        if not self.is_music_playing() :
+            err = self.responder.post(START)
+            if err != 200 : raise CustomError(f"An error occurred, server response : {err}")
+    
+    def cmd_stop(self):
+        if  self.is_music_playing() :
+            err = self.responder.post(STOP)
+            if err != 200 : raise CustomError(f"An error occurred, server response : {err}")
+ 
     def save_links(self, tkList:tk.Listbox):
         with filedialog.asksaveasfile(mode='w', defaultextension=("text files","*.txt")) as file:
             data  = tkList.get(0, "end")
@@ -70,10 +94,18 @@ class Functionality:
 
     def cmd_set(self, settings : list) :
         if len(settings) != 2 : raise CustomError("Missing argument for --set command.\nUse this command like : --set ip port")
-        self.responder.reset_address(settings[0], settings[1])
+
+        with open(SETTINGS, "r+") as file :
+            data = json.load(file)
+            data["networking"]["ip"]   = settings[0]
+            data["networking"]["port"] = settings[1]
+            file.seek(0)
+            file.truncate()
+            json.dump(data,file)
     
     def set(self, _ip : str, _port : str, window : tk.Tk):
         self.responder.reset_address(_ip, _port)
+        self.cmd_set([_ip, _port])
         window.destroy()
     
     #Auto multiply the value with 30.
@@ -86,12 +118,16 @@ class Functionality:
         def bb()  : self.responder.post(SCROLL, {"seek": -1*30})
         def ff()  : self.responder.post(SCROLL, {"seek":  1*30})
         def start(btn:ttk.Button):
-            if btn["text"] == "START" :
-                print("Start the video")
-                btn["text"] = "STOP"
-                return
-            print("Stop the video")
-            btn["text"] = "START"
+            cmd, label = "", ""
+            if self.is_music_playing() :
+                cmd   = STOP
+                label = "START"
+            else :
+                cmd   = START
+                label = "STOP"
+
+            btn["text"] = label
+            self.responder.post(cmd)
 
         commands = {"bbb" : bbb, "bb" : bb, "ff":ff, "fff":fff, "start":start}
         if btn : 
@@ -101,14 +137,16 @@ class Functionality:
 
 #This is the communication between the server and the application
 class Responder:
-    def __init__(self, _ip = "http://127.0.0.1:", _port = "5000/"):
-
-        self.ip      =  "http://127.0.0.1:"
-        self.port    =  "5000/"
-        self.address =  _ip + _port
+    def __init__(self):
+        with open(SETTINGS) as file :
+            settings  = json.load(file)
+            self.ip   = settings["networking"]["ip"]
+            self.port = settings["networking"]["port"]
+            
+        self.address =  self.ip + ":" + self.port + "/"
 
     def reset_address(self, _ip : str, _port : str) :
-        self.ip, self.port, self.address = _ip, _port, _ip + _port
+        self.ip, self.port, self.address = _ip, _port, _ip + ":" + _port + "/"
 
     def post(self, route, msg=None) -> int:
         try:
@@ -116,6 +154,13 @@ class Responder:
             return r.status_code
         except:
             return 500
+
+    def get(self, route, msg=None) -> (dict,int):
+        try:
+            r = requests.get(self.address+route, params=msg)
+            return (r.content, r.status_code)
+        except:
+            return (None, 500)
         
 
 class CustomError(Exception):

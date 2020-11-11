@@ -23,4 +23,10 @@
 	- Added custom error management for the CLI.
 	- Handled more error cases for the GUI.
 	- Implemented volume settings for the GUI and CLI.
+
+11.11:
+	- Added settings.json file, from now on this file will be used at startup.
+	- Fixed the CMD set function.
+	- Implemented most feature functions.
+	- Added error handeling for all functions.
 	

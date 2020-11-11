@@ -1,5 +1,5 @@
 # CliView Desktop
------------------------
+
 [![Python](https://www.python.org/static/community_logos/python-powered-w-200x80.png)](https://www.python.org/)
 
 #### Command line mode:
