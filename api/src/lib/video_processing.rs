@@ -68,3 +68,32 @@ pub fn write_to_stdin(process: &mut Popen, msg: &str) -> Result<(), Box<dyn Erro
     process.stdin.as_mut().unwrap().write_all(msg.as_bytes())?;
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use subprocess::{Popen, PopenConfig, Redirection};
+
+    use crate::write_to_stdin;
+
+    fn init_popen() -> Popen {
+        Popen::create(
+            &["cat"],
+            PopenConfig {
+                stdin: Redirection::Pipe,
+                stdout: Redirection::Pipe,
+                stderr: Redirection::None,
+                ..Default::default()
+            },
+        )
+        .unwrap()
+    }
+
+    #[test]
+    fn test_write_to_stdin() {
+        let mut process = init_popen();
+        let msg = "any message";
+        write_to_stdin(&mut process, msg).unwrap();
+        let (stdout, _) = process.communicate(Some("")).unwrap();
+        assert!(stdout.unwrap().as_str() == msg)
+    }
+}

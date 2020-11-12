@@ -7,7 +7,7 @@ pub type Error = Box<dyn std::error::Error>;
 pub type GenericResult<T> = Result<T, Error>;
 
 #[derive(
-    Debug, Clone, Serialize, Deserialize, PartialEq, ToDao, ToColumnNames, ToTableName, FromDao,
+    Debug, Clone, Serialize, Deserialize, ToDao, ToColumnNames, ToTableName, FromDao, PartialEq,
 )]
 pub struct Url {
     pub url: String,
@@ -37,7 +37,7 @@ impl From<RetriveUrl> for Url {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Copy)]
 pub struct Volume {
     pub volume: i32,
 }
@@ -54,7 +54,7 @@ impl Default for Volume {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Copy, PartialEq)]
 pub struct Ammount {
     pub ammount: i32,
 }
@@ -76,7 +76,7 @@ impl Ammount {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Action {
     Stream(Url),
     Skip,
@@ -84,6 +84,8 @@ pub enum Action {
     VolumeDown,
     VolumeSet(Volume),
     Seek(Ammount),
+    Play,
+    Pause,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -127,22 +129,44 @@ impl Default for QueueState {
         Self::new()
     }
 }
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+pub struct PlaybackStatus {
+    pub status: bool,
+}
+
+impl PlaybackStatus {
+    pub fn new(status: bool) -> Self {
+        Self { status }
+    }
+}
+
+impl Default for PlaybackStatus {
+    fn default() -> Self {
+        Self::new(false)
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CommandQueue {
     pub queue: Mutex<VecDeque<Action>>,
     pub volume: Mutex<Volume>,
+    pub playback_state: Mutex<PlaybackStatus>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CommandQueueSendable {
     pub queue: Vec<Action>,
     pub volume: Volume,
+    pub playback_state: PlaybackStatus,
 }
 
 impl CommandQueueSendable {
-    pub fn new(queue: Vec<Action>, volume: Volume) -> Self {
-        Self { queue, volume }
+    pub fn new(queue: Vec<Action>, volume: Volume, playback_state: PlaybackStatus) -> Self {
+        Self {
+            queue,
+            volume,
+            playback_state,
+        }
     }
 }
 
@@ -151,15 +175,18 @@ impl CommandQueue {
         Self {
             queue: Mutex::from(VecDeque::new()),
             volume: Mutex::from(Volume::default()),
+            playback_state: Mutex::from(PlaybackStatus::default()),
         }
     }
     pub fn to_response(&self) -> CommandQueueSendable {
         let queue = self.queue.lock().unwrap();
         let volume = self.volume.lock().unwrap();
+        let playback_state = self.playback_state.lock().unwrap();
 
         CommandQueueSendable::new(
             queue.iter().map(|x| x.to_owned()).collect::<Vec<Action>>(),
             Volume::new(volume.volume),
+            PlaybackStatus::new(playback_state.status),
         )
     }
 }
@@ -167,5 +194,36 @@ impl CommandQueue {
 impl Default for CommandQueue {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::Ammount;
+    #[test]
+    fn test_ammount_as_vec_of_seconds() {
+        let test_ammounts = vec![
+            Ammount::new(0),
+            Ammount::new(30),
+            Ammount::new(120),
+            Ammount::new(570),
+            Ammount::new(1230),
+            Ammount::new(-30),
+            Ammount::new(-120),
+            Ammount::new(-570),
+            Ammount::new(-1230),
+        ];
+
+        //Check if the sums are correct
+        assert!(test_ammounts
+            .iter()
+            .all(|x| x.as_vec_of_seconds().sum::<i32>() == x.ammount));
+
+        //Check wether the 30s add up to 600
+        assert!(test_ammounts.iter().all(|x| x
+            .as_vec_of_seconds()
+            .filter(|y| y.abs() == 30)
+            .sum::<i32>()
+            < 600));
     }
 }

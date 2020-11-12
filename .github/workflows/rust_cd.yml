@@ -1,0 +1,61 @@
+name: Rust Continuous Deployment
+
+on:
+  push:
+    branches: [master]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        override: true
+    - name: Install cross
+      run: cargo install cross
+    - name: Create docker image for build
+      run: cd api && docker build -t my/cross:latest . 
+    - name: Build with cross for raspberry pi
+      run: cd api && cross build --release --target armv7-unknown-linux-gnueabihf
+    - name: Bump version and push tag/create release point
+      uses: anothrNick/github-tag-action@1.17.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      id: bump_version
+    - name: Upload proxy binary to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: api/target/armv7-unknown-linux-gnueabihf/release/proxy
+        asset_name: proxy
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+    - name: Upload queue binary to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: api/target/armv7-unknown-linux-gnueabihf/release/queue
+        asset_name: queue
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+    - name: Upload command binary to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: api/target/armv7-unknown-linux-gnueabihf/release/command
+        asset_name: command
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+    - name: Upload streamer binary to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: api/target/armv7-unknown-linux-gnueabihf/release/streamer
+        asset_name: streamer
+        tag: ${{ steps.bump_version.outputs.new_tag }}
+    

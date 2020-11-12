@@ -67,9 +67,9 @@ fn main() -> GenericResult<()> {
 #[cfg(test)]
 mod test {
     use super::setup_rocket;
+    use lib::Config as CliViewConfig;
+    use lib::QueueStateSendable;
     use lib::Url;
-    use lib::{establish_test_connection, Config as CliViewConfig};
-    use lib::{select_values, QueueStateSendable};
     use rocket::http::ContentType;
     use rocket::http::Status;
     use rocket::local::Client;
