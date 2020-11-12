@@ -1,0 +1,5 @@
+desktop/.vs/
+desktop/desktop.sln
+desktop/desktop/__pycache__/
+desktop/desktop/tests/__pycache__/
+desktop/desktop/desktop.pyproj

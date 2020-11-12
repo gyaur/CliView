@@ -1,0 +1,37 @@
+10.24:
+	Reselected technology for the desktop application, designed the basic layout of the program, 
+	implemented said layout and added progress report to git.
+
+10.29:
+	-Created the command line interface for the desktop application.
+	-Separated the cmd and gui interfaces.
+	-Organized the code according to the OOM standards.
+	-Handled new error cases, like empty link list etc...
+
+11.04:
+	- Connected the backend and the application.
+	- Implemented the main feature functions like (cast, mcast, etc...)
+	- Tested the feature functions with the dummy server.
+	- Updated the README with relevant errors.
+
+11.06:
+	- Update the GUI with settings and load buttons
+	- Implemented the settings and the load functions. The settings allows the user to set the ip and the port values.
+	  The load function allows the user to load a previously saved playlist.
+	- Implemented the settings function for the CLI.
+	- Reorganized the Responder class and the consttanst.py.
+	- Added custom error management for the CLI.
+	- Handled more error cases for the GUI.
+	- Implemented volume settings for the GUI and CLI.
+
+11.11:
+	- Added settings.json file, from now on this file will be used at startup.
+	- Fixed the CMD set function.
+	- Implemented most feature functions.
+	- Added error handeling for all functions.
+
+11.12:
+	- Tested most of the feature functions and added test.py
+	- Added instructios to the readme.
+	- Connected the desktop application with the mock version of the server.
+	
