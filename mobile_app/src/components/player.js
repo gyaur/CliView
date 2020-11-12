@@ -1,55 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import jsonServer from '../api/jsonServer'
 
 const Player = () => {
 
+	const [playing, setPlaying] = useState(false);
 	return (
 		<View style={styles.playerStyle}>
 			<TouchableOpacity
 				style={styles.backwardButton}
 				onPress={() => {
-					jsonServer.post('/test', {/*10secBack*/ })
+					jsonServer.post('/seek ', { seek: -30 })
 						.then(function (response) {
 							console.log(response);
 						})
 						.catch(function (error) {
 							console.log(error);
 						})
-					//console.log('10 sec backwords') 
+					console.log('30 sec backwords')
 				}}
 			>
 				<AntDesign name="banckward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
-		
-		
+
+
 			<TouchableOpacity style={styles.playButtonStyle}
-				onPress={() => { 
-					jsonServer.post('/test', {/*play*/ })
-					.then(function (response) {
-						console.log(response);
-					})
-					.catch(function (error) {
-						console.log(error);
-					})
-					//console.log('Play') 
-					}}>
-				<AntDesign name="play" size={55} color="#c8d6e5" />
+				onPress={() => {
+					if (playing == false) {
+						jsonServer.post('/play ', {})
+							.then(function (response) {
+								console.log(response);
+							})
+							.catch(function (error) {
+								console.log(error);
+							})
+						setPlaying(true);
+
+					}
+					else {
+						jsonServer.post('/pause ', {})
+							.then(function (response) {
+								console.log(response);
+							})
+							.catch(function (error) {
+								console.log(error);
+							})
+						setPlaying(false);
+					}
+				}}>
+				{playing ?
+					<FontAwesome name="pause-circle" size={60} color="#c8d6e5" /> :
+					<AntDesign name="play" size={55} color="#c8d6e5" />
+				}
 			</TouchableOpacity>
-			
-			
+
+
 			<TouchableOpacity style={styles.forwardButton}
-				onPress={() => { 
-					jsonServer.post('/test', { op : "/*10secForward*/" })
-					.then(function (response) {
-						console.log(response);
-					})
-					.catch(function (error) {
-						console.log(error);
-					})
-					//console.log('10 sec forward') 
-					}}>
+				onPress={() => {
+					jsonServer.post('/seek', { seek: 30 })
+						.then(function (response) {
+							console.log(response);
+						})
+						.catch(function (error) {
+							console.log(error);
+						})
+					//console.log('30 sec forward') 
+				}}>
 				<AntDesign name="forward" size={24} color="#c8d6e5" />
 			</TouchableOpacity>
 

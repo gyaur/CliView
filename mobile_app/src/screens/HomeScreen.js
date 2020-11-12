@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Button, StyleSheet, Text } from 'react-native';
 import SearchBar from '../components/searchBar';
 import Player from '../components/player';
 import VolumeSlide from '../components/volumeSlide';
@@ -19,26 +19,41 @@ const HomeScreen = () => {
       <SearchBar
         link={link}
         onLinkChange={newLink => setLink(newLink)}
-        onLinkSubmit={() =>
-          jsonServer.post('/test', {/*data*/ })
+        onLinkSubmit={() => {
+          jsonServer.post('/stream', { url: link })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          console.log("link submitted : ", link)
+        }
+        }
+      />
+
+      <View style={styles.castButton}>
+        <Button
+          title="Cast now"
+          color="#576574"
+          onPress={() => {
+            jsonServer.post('/stream', { url: link })
               .then(function (response) {
                 console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
               })
-          //console.log("link submitted : ", link)
-        }
-      />
-
-      <View style={styles.castButton}>
+            console.log("link submitted : ", link)
+          }}
+        />
+        <Text style={{marginHorizontal: 10, color: '#c8d6e5'}}> Or</Text>
         <Button
-          style={styles.button}
-          title="Cast"
+          title="Add to queue"
           color="#576574"
           onPress={() => {
             //casting function here 
-            jsonServer.post('/test', {/*data*/})
+            jsonServer.post('/queue ', { url: link })
               .then(function (response) {
                 console.log(response);
               })
@@ -53,23 +68,7 @@ const HomeScreen = () => {
       <Player />
 
       <View style={styles.slidecontainer}>
-        
         <VolumeSlide />
-
-        <TouchableOpacity
-          style={styles.fullSreenIcon}
-          onPress={() => { 
-            jsonServer.post('/test', {/*op : "fullScreen"*/})
-              .then(function (response) {
-                console.log(response);
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-            console.log('full screen ') 
-            }} >
-          <Entypo name="resize-full-screen" size={24} color="#c8d6e5" />
-        </TouchableOpacity>
       </View>
 
     </View>
@@ -85,12 +84,14 @@ const styles = StyleSheet.create({
     borderRadius: 7
   },
   castButton: {
-    marginTop: 5,
-    marginHorizontal: 120
+    marginTop: 15,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   slidecontainer: {
     marginTop: 50,
-    marginLeft: 20,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",

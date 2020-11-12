@@ -16,7 +16,7 @@ const VolumeSlide = () => {
         onPress={() => {
           if (sliderValue === 0) {
             setSliderValue(70);
-            jsonServer.post('/test', {/*op : "unmute"*/})
+            jsonServer.post('/volume', {volume: sliderValue / 10})
               .then(function (response) {
                 console.log(response);
               })
@@ -26,7 +26,7 @@ const VolumeSlide = () => {
           }
           else {
             setSliderValue(0);
-            jsonServer.post('/test', {/*op : "mute"*/})
+            jsonServer.post('/volume', {volume: sliderValue / 10})
               .then(function (response) {
                 console.log(response);
               })
@@ -56,7 +56,7 @@ const VolumeSlide = () => {
         }
         onSlidingComplete={() => { 
           //console.log('volume should be updated to :', sliderValue) 
-          jsonServer.post('/test', {volume : sliderValue})
+          jsonServer.post('/volume', {volume : sliderValue / 10})
               .then(function (response) {
                 console.log(response);
               })
