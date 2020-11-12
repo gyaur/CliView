@@ -29,4 +29,9 @@
 	- Fixed the CMD set function.
 	- Implemented most feature functions.
 	- Added error handeling for all functions.
+
+11.12:
+	- Tested most of the feature functions and added test.py
+	- Added instructios to the readme.
+	- Connected the desktop application with the mock version of the server.
 	

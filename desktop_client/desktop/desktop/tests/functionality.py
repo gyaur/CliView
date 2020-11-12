@@ -1,3 +1,4 @@
+#The only modification is that all functions return a value for easy testing.
 import json
 import requests
 import tkinter as tk
@@ -41,13 +42,12 @@ class Functionality:
     def cmd_mcast(self, links:list) :
         codes = [ self.responder.post(MCAST, {"url": link}) for link in links]
         res   = next(( (i,x) for (i,x) in enumerate(codes) if x != 200), None)
-        if res != None :
-            raise CustomError(f"The {res[0]}. link could not be sent to the server. Error code : {res[1]}")
+        
+        return res
     
     def cmd_volume(self, value:list) :
         err = self.responder.post(VOLUME, {"volume": int(value[0])}) 
-        if err != 200 :
-            raise CustomError(f"An error occurred, server response : {err}")
+        return err
 
     def set_volume(self, volume : str):
         v = int(float(volume))
@@ -58,8 +58,7 @@ class Functionality:
 
     def next(self):
         err = self.responder.post(NEXT)
-        if err != 200 :
-            raise CustomError(f"An error occurred, server response : {err}")
+        return err
 
     #Return true if music playing false otherwise
     def is_music_playing(self) -> bool:
@@ -71,13 +70,12 @@ class Functionality:
     
     def cmd_start(self):
         if not self.is_music_playing() :
-            err = self.responder.post(START)
-            if err != 200 : raise CustomError(f"An error occurred, server response : {err}")
+            return self.responder.post(START)
+            
     
     def cmd_stop(self):
-        if  self.is_music_playing() :
-            err = self.responder.post(STOP)
-            if err != 200 : raise CustomError(f"An error occurred, server response : {err}")
+            return self.responder.post(STOP)
+           
  
     def save_links(self, tkList:tk.Listbox):
         with filedialog.asksaveasfile(mode='w', defaultextension=("text files","*.txt")) as file:
@@ -110,14 +108,14 @@ class Functionality:
     
     #Auto multiply the value with 30.
     def cmd_scroll(self,value :int):
-        self.responder.post(SCROLL, {"ammount": value*30})
+        return self.responder.post(SCROLL, {"ammount": value*30})
     
-    def scroll_video(self, command:str, btn:ttk.Button = None) :
-        def fff() : self.cmd_scroll(5)
-        def bbb() : self.cmd_scroll(-5)
-        def bb()  : self.cmd_scroll(-1)
-        def ff()  : self.cmd_scroll(5)
-        def start(btn:ttk.Button):
+    def scroll_video(self, command:str) :
+        def fff() : return self.cmd_scroll(5)
+        def bbb() : return self.cmd_scroll(-5)
+        def bb()  : return self.cmd_scroll(-1)
+        def ff()  : return self.cmd_scroll(5)
+        def start():
             cmd, label = "", ""
             if self.is_music_playing() :
                 cmd   = STOP
@@ -126,15 +124,11 @@ class Functionality:
                 cmd   = START
                 label = "STOP"
 
-            btn["text"] = label
-            self.responder.post(cmd)
+            return self.responder.post(cmd)
 
         commands = {"bbb" : bbb, "bb" : bb, "ff":ff, "fff":fff, "start":start}
-        if btn : 
-            f = commands[command]
-            f(btn)
-            return
-        commands[command]()
+        
+        return commands[command]()
 
 #This is the communication between the server and the application
 class Responder:

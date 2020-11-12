@@ -2,9 +2,13 @@
 
 [![Python](https://www.python.org/static/community_logos/python-powered-w-200x80.png)](https://www.python.org/)
 
+#### Installation:
+ With .yaml file:
+    Use the .yaml file in ```CliView\desktop_client\desktop\desktop\Installation``` folder it includes everything needed to run the application and the server too.
+
 #### Command line mode:
 *The errors mentioned below only concern use-case errors and not server errors.*
-1. Casting a file to device, it will start to play the video immediately. Multiple links can be provided but only the first one will be used:
+1. Basically this is multicast with one url. Multiple urls can be provided but only the first one will be used [untested]:
     ```
     python main.py --cast url
     ```
@@ -14,7 +18,7 @@
     | ------ | ------ |
     | ```missing 1 required positional argument: 'link'``` | Missing url |
 
-1. Adds links to the playlist queue:
+1. Adds url to the playlist queue  [untested]:
     ```
     python main.py --mcast url1 url2 ... urln
     ```
@@ -23,7 +27,7 @@
     | ------ | ------ |
     | ```missing 1 required positional argument: 'links'``` | Missing url(s) |
     
-1. Casting the next link in queue, skipping the current video:
+1. Skips the current video:
     ```
     python main.py --next
     ```
