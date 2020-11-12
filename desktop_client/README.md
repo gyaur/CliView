@@ -8,6 +8,36 @@
 
 #### Command line mode:
 *The errors mentioned below only concern use-case errors and not server errors.*
+1. It will change the settings.json file ip and port number:
+    ```
+    python main.py --set ip port
+    ```
+    **Possible errors:**
+    | Error | Problem |
+    | ------ | ------ |
+    | ```cmd_set() missing 1 required positional argument: 'settings'``` | Missing values |
+    |```Missing argument for --set command. Use this command like : --set ip port ```| Ip address or port number missing. |
+    
+1. It will start the video if it was stopped earlier or do nothing:
+    ```
+    python main.py --start
+    ```
+    
+    **Possible errors:**
+    | Error | Problem |
+    | ------ | ------ |
+    | - | - |
+    
+1. It will stop the video if it was started earlier or do nothing:
+    ```
+    python main.py --stop
+    ```
+    
+    **Possible errors:**
+    | Error | Problem |
+    | ------ | ------ |
+    | - | - |
+
 1. Basically this is multicast with one url. Multiple urls can be provided but only the first one will be used [untested]:
     ```
     python main.py --cast url
@@ -45,6 +75,8 @@
     | Error | Problem |
     | ------ | ------ |
     | ```missing 1 required positional argument: 'value'``` | Missing value |
+    
+
     
 #### GUI mode:
 ##### Possible errors:
