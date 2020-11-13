@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js"></script>
+
+    <title>Stream your Video</title>
+</head>
+
+<body>
+
+<div id="rectangle_1">
+    <p id="head_text">CLIVIEW
+        <img class="image "src="music.svg">
+    </p>
+
+    <div class="label" id="label1" >
+        <form class="form-inline" action="/search/" class="hide-submit" method="GET" >
+            <input id="inn" type="text" name="link" placeholder="Paste URL here.">
+            <img id="play" src="play.svg" onclick="playfunction()"/>
+           
+            </form>
+    </div>
+
+    <div class="label" id="label2" style="display: none;">
+        <div id="streaming" class="form-inline"></div>
+            <div>
+                <p id="str">Video Streaming...</p>
+
+            </div>
+            <div>
+                <img id="delete" src="delete.svg" onclick="deletefunction()"/>
+
+            </div>
+            <div id="controlling" class="form-inline">
+            <img id="back" src="back.svg" onclick="backfunction()"/>
+            <img id="pause" src="pause.svg" onclick="pausefunction()"/>
+            <img id="repause" src="repause.svg" onclick="repausefunction()" style="display: none;" />
+            <img id="front" src="front.svg" onclick="frontfunction()"/>
+            <img id="tab" src="tab.svg" onclick="tabfunction()"/>
+            
+        </div>
+        </div>
+
+        
+
+
+    </div>
+</div>
+
+</body>
+</html>

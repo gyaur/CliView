@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Cliview",
+  "description": "Streaming your Video",
+  "version": "1.0",
+  
+
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "scripts": ["eventPage.js"],
+    "persistent": true
+  },
+
+  "permissions": [
+            "contextMenus"
+        ]
+}
