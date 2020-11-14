@@ -4,6 +4,7 @@ use lib::Config as CliViewConfig;
 use lib::GenericResult;
 use lib::QueueState;
 use lib::Url;
+#[cfg(feature = "db")]
 use lib::{establish_connection, init_db, select_values, update_db};
 use lib::{extract_url, QueueStateSendable};
 use rocket::config::{Config, Environment};
@@ -15,6 +16,7 @@ use rocket_contrib::json::Json;
 fn front(state: State<QueueState>) -> Json<Option<Url>> {
     let mut queue = state.queue.lock().unwrap();
     let value = queue.pop_front();
+    #[cfg(feature = "db")]
     update_db(&queue.clone(), &mut establish_connection());
     Json(value)
 }
@@ -31,6 +33,7 @@ fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
         Ok(url) => {
             let mut queue = state.queue.lock().unwrap();
             queue.push_back(url);
+            #[cfg(feature = "db")]
             update_db(&queue.clone(), &mut establish_connection());
             Status::Ok
         }
@@ -48,9 +51,12 @@ fn setup_rocket(cfg: CliViewConfig, test: bool) -> rocket::Rocket {
 
     let mut state = QueueState::new();
     if !test {
-        let mut em = establish_connection();
-        init_db(&mut em);
-        state = select_values(&mut em).into();
+        #[cfg(feature = "db")]
+        {
+            let mut em = establish_connection();
+            init_db(&mut em);
+            state = select_values(&mut em).into();
+        }
     }
 
     rocket::custom(rocket_config)

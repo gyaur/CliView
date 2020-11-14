@@ -1,4 +1,5 @@
 mod config;
+#[cfg(feature = "db")]
 mod db;
 mod macros;
 mod player;
@@ -6,6 +7,7 @@ mod types;
 mod video_processing;
 
 pub use config::*;
+#[cfg(feature = "db")]
 pub use db::*;
 pub use macros::*;
 pub use player::*;
