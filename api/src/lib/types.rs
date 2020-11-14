@@ -1,3 +1,4 @@
+use regex;
 #[cfg(feature = "db")]
 use rustorm::*;
 #[cfg(feature = "db")]
@@ -30,6 +31,10 @@ pub struct RetriveUrl {
 impl Url {
     pub fn new(url: String) -> Self {
         Self { url }
+    }
+    pub fn is_ip(&self) -> bool {
+        let re = regex::Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").unwrap();
+        re.is_match(self.url.as_str())
     }
 }
 

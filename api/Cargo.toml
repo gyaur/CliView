@@ -20,6 +20,7 @@ confy = "0.4"
 dotenv = "0.15"
 rustorm = { version = "0.17", features = ["with-sqlite"],optional=true}
 reqwest = { version = "0.10", features = ["blocking", "json"] }
+regex = "1"
 
 [dependencies.rocket_contrib]
 version = "0.4.5"
