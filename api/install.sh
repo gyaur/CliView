@@ -2,6 +2,7 @@ echo "Installing dependencies"
 
 sudo apt update
 sudo apt install -y omxplayer libsqlite3-dev
+pip install youtube-dl
 
 echo "Getting latest version"
 
