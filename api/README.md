@@ -97,7 +97,7 @@ All request and response bodies are empty unless specified otherwise
   * 500 - Internal server error
 
 **/seek [POST]**
-* Body: [json] `{"seek": ammount}`
+* Body: [json] `{"ammount": ammount}`
   * where *ammount* is multiple of 30 or 600 and represented in seconds. Positive *ammount* is seek forward and negaitve *ammount* seek backwards
 * Responses:
   * 200 - OK
