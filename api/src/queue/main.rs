@@ -32,7 +32,7 @@ fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
             let mut queue = state.queue.lock().unwrap();
             queue.push_back(url);
             update_db(&queue.clone(), &mut establish_connection());
-            Status::Accepted
+            Status::Ok
         }
         Err(_) => Status::BadRequest,
     }
