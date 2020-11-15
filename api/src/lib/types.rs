@@ -33,7 +33,7 @@ impl Url {
         Self { url }
     }
     pub fn is_ip(&self) -> bool {
-        let re = regex::Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").unwrap();
+        let re = regex::Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}").unwrap();
         re.is_match(self.url.as_str())
     }
 }
