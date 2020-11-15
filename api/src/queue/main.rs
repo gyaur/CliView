@@ -103,7 +103,7 @@ mod test {
             .body(r#"{"url":"https://www.youtube.com/watch?v=9em32dDnTck"}"#)
             .header(ContentType::JSON)
             .dispatch();
-        assert_eq!(response.status(), Status::Accepted);
+        assert_eq!(response.status(), Status::Ok);
 
         let mut response = client.get("/queue").dispatch();
         assert_eq!(response.status(), Status::Ok);
@@ -139,7 +139,7 @@ mod test {
             .body(r#"{"url":"https://www.youtube.com/watch?v=9em32dDnTck"}"#)
             .header(ContentType::JSON)
             .dispatch();
-        assert_eq!(response.status(), Status::Accepted);
+        assert_eq!(response.status(), Status::Ok);
 
         let mut response = client.get("/front").dispatch();
         let state = serde_json::from_str::<Option<Url>>(&response.body_string().unwrap()).unwrap();
