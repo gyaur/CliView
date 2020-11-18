@@ -5,6 +5,10 @@ use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
 
 pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
+    if url.is_ip() {
+        return Ok(url.clone());
+    }
+
     let output = YoutubeDl::new(&url.url)
         .socket_timeout("15")
         .format("best")

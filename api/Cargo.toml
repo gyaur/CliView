@@ -4,8 +4,11 @@ version = "0.1.0"
 authors = ["Bálint Gyarmathy <bulint1@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
 
+default = ["db"]
+
+db = ["rustorm"]
 
 [dependencies]
 subprocess = "0.2"
@@ -15,8 +18,9 @@ serde_json = "1.0"
 rocket = "0.4"
 confy = "0.4"
 dotenv = "0.15"
-rustorm = { version = "0.17", features = ["with-sqlite"] }
+rustorm = { version = "0.17", features = ["with-sqlite"],optional=true}
 reqwest = { version = "0.10", features = ["blocking", "json"] }
+regex = "1"
 
 [dependencies.rocket_contrib]
 version = "0.4.5"

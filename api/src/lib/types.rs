@@ -1,4 +1,7 @@
+use regex;
+#[cfg(feature = "db")]
 use rustorm::*;
+#[cfg(feature = "db")]
 use rustorm::{FromDao, ToColumnNames, ToDao, ToTableName};
 use serde::{Deserialize, Serialize};
 use std::{collections::VecDeque, sync::Mutex};
@@ -6,13 +9,19 @@ use std::{collections::VecDeque, sync::Mutex};
 pub type Error = Box<dyn std::error::Error>;
 pub type GenericResult<T> = Result<T, Error>;
 
+#[cfg(feature = "db")]
 #[derive(
     Debug, Clone, Serialize, Deserialize, ToDao, ToColumnNames, ToTableName, FromDao, PartialEq,
 )]
 pub struct Url {
     pub url: String,
 }
-
+#[cfg(not(feature = "db"))]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Url {
+    pub url: String,
+}
+#[cfg(feature = "db")]
 #[derive(Debug, FromDao, ToColumnNames, ToTableName)]
 pub struct RetriveUrl {
     pub id: i32,
@@ -23,6 +32,10 @@ impl Url {
     pub fn new(url: String) -> Self {
         Self { url }
     }
+    pub fn is_ip(&self) -> bool {
+        let re = regex::Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}").unwrap();
+        re.is_match(self.url.as_str())
+    }
 }
 
 impl From<String> for Url {
@@ -31,6 +44,7 @@ impl From<String> for Url {
     }
 }
 
+#[cfg(feature = "db")]
 impl From<RetriveUrl> for Url {
     fn from(inc: RetriveUrl) -> Self {
         Url::from(inc.url)

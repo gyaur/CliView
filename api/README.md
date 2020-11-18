@@ -6,7 +6,9 @@ All request and response bodies are empty unless specified otherwise
 
 **/stream [POST]**
 * Body: [json] `{"url": url}`
-  * where url is either a youtube video or address of tcp server hosting a local file stream
+  * where url is either a youtube video or address of http server hosting a local file stream
+  * the http server should serve files realitve to its directry like the [python http.server](https://docs.python.org/3/library/http.server.html#http.server.SimpleHTTPRequestHandler.do_GET:~:text=The%20SimpleHTTPRequestHandler%20class%20can%20be%20used,files%20relative%20to%20the%20current%20directory%3A)
+  * if streaming a local file the url format is http://\<ip>:\<port>/\<path_to_video>
 * Responses:
   * 200 - OK
     * Interrupts any current content and starts playing the video. Does not start playback if nothing is playing.
@@ -17,7 +19,9 @@ All request and response bodies are empty unless specified otherwise
 
 **/queue [POST]**
 * Body: [json] `{"url": url}`
-  * where url is either a youtube video or address of tcp server hosting a local file stream
+  * where url is either a youtube video or address of http server hosting a local file stream
+  * the http server should serve files realitve to its directry like the [python http.server](https://docs.python.org/3/library/http.server.html#http.server.SimpleHTTPRequestHandler.do_GET:~:text=The%20SimpleHTTPRequestHandler%20class%20can%20be%20used,files%20relative%20to%20the%20current%20directory%3A)
+  * if streaming a local file the url format is http://\<ip>:\<port>/\<path_to_video>
 * Responses:
   * 200 - OK
     * Video added to the queue
@@ -97,7 +101,7 @@ All request and response bodies are empty unless specified otherwise
   * 500 - Internal server error
 
 **/seek [POST]**
-* Body: [json] `{"seek": ammount}`
+* Body: [json] `{"ammount": ammount}`
   * where *ammount* is multiple of 30 or 600 and represented in seconds. Positive *ammount* is seek forward and negaitve *ammount* seek backwards
 * Responses:
   * 200 - OK
