@@ -34,4 +34,8 @@
 	- Tested most of the feature functions and added test.py
 	- Added instructios to the readme.
 	- Connected the desktop application with the mock version of the server.
+
+11.19:
+	- Changed the test framework to pytest. The applications passed all tests.
+	- Wrote the github CI actions for continuous integration.
 	
