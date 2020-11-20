@@ -70,3 +70,5 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector("#repause").addEventListener('click', repausefunction);
 });
 ```
+**Below gif illsutartes the Real Test Case**
+![testing_extension](https://github.com/gyaur/CliView/blob/master/Browser%20Extension/Test.gif)
