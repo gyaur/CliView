@@ -1,0 +1,143 @@
+body{
+width: 373px;
+height: 147px;
+background: #F4ABC4;
+}
+#head_text{
+position: static;
+width: 102px;
+height: 20px;
+left: 1100px;
+top: 66px;
+
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 21px;
+
+color: #060930;
+}
+
+.form-inline {  
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.image{
+	
+height: 125px;
+width: 125px;
+left: 1476px;
+top: 254px;
+border-radius: 0px;
+
+position: absolute;
+left: 65%;
+right: 68.06%;
+top: 7.62%;
+bottom: 88.75%;
+
+}
+
+
+
+#inn{
+position: static;
+width: 178px;
+height: 28px;
+left: 1007px;
+top: 112px;
+
+background: #595B83;
+}
+#play{
+height: 52px;
+width: 52px;
+left: 1007px;
+top: 112px;
+border-radius: 0px;
+
+}
+#label1{
+	float: left;
+}
+#str{
+position: absolute;
+left: 5%;
+
+top: 25%;
+bottom: 85.48%;
+
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 21px;
+
+color: #595B83;
+}
+
+#streaming{
+	background: red !important;
+}
+
+#delete{
+position: absolute;
+height: 41px;
+width: 41px;
+left: 43%;
+top: 30%;
+border-radius: 0px;
+
+}
+
+#back{
+position: absolute;
+height: 24px;
+width: 24px;
+left: 10%;
+top: 70%;
+border-radius: 0px;
+}
+
+#front{
+	position: absolute;
+height: 24px;
+width: 24px;
+left: 30%;
+top: 70%;
+border-radius: 0px;
+
+
+}
+
+#pause{
+position: absolute;
+height: 24px;
+width: 24px;
+left:20%;
+top: 70%;
+border-radius: 0px;
+
+
+}
+
+#tab{
+height: 24px;
+width: 24px;
+left: 45%;
+top: 70%;
+border-radius: 0px;
+position: absolute;
+}
+
+#repause{
+position: absolute;
+height: 24px;
+width: 24px;
+left:20%;
+top: 70%;
+border-radius: 0px;
+}
