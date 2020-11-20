@@ -1,8 +1,8 @@
-**#Cliview Browser Extension#**
-##Designed by Emin Bayramov
+**Cliview Browser Extension**
+Designed by Emin Bayramov
 
-*##Manifest.json has been created and published. 
-	*Every extension has a JSON-formatted manifest file, named manifest.json, that provides important information.
+Manifest.json has been created and published. 
+	Every extension has a JSON-formatted manifest file, named manifest.json, that provides important information.
 ```
 {
   
@@ -34,12 +34,12 @@
 
 ```
 
-*##PopUp.html PopUp.css 
-	*has been created and published
-	*launch file, where our users will be able to stream link.
+PopUp.html PopUp.css 
+	has been created and published
+	launch file, where our users will be able to stream link.
 
-*##PopUp.js has been created
-	*Functionality works well
+PopUp.js has been created
+	Functionality works well
 ```
 function playfunction() {
     let link = document.getElementById('inn').value;
@@ -55,7 +55,7 @@ function playfunction() {
 }
 ```
 
-**#New Updates:**
+**New Updates:**
 	*Chrome does not allow inline style addition such as onlick functions, and gives below error
 	*Refused to apply inline style because it violates the following Content Security Policy directive: "default-src 'self'". Note that 	'style-src' was not explicitly set, so 'default-src' is used as a fallback.
 	*Due to this error, EventListener method has been used, 
