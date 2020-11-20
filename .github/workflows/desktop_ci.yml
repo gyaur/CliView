@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8.5
-      uses: actions/setup-python@v2 --no-warn-script-location
+      uses: actions/setup-python@v2
       with:
         python-version: 3.8.5
         architecture: 'x64'
@@ -31,7 +31,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Lint the test directory with flake8
       run: |
-        cd tests
+        cd desktop_client\desktop\desktop\tests
         # Activate the base environment
         C:\Miniconda\condabin\conda.bat activate base
         # stop the build if there are Python syntax errors or undefined names
