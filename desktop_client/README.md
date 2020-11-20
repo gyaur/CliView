@@ -1,6 +1,7 @@
 # CliView Desktop
 
 [![Python](https://www.python.org/static/community_logos/python-powered-w-200x80.png)](https://www.python.org/)
+![Desktop app](https://github.com/gyaur/CliView/workflows/Desktop%20app%20(Python)%20continuous%20integration/badge.svg)
 
 #### Installation:
  With .yaml file:
