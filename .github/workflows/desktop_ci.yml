@@ -11,9 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.8.5
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2 --no-warn-script-location
       with:
         python-version: 3.8.5
+        architecture: 'x64'
     - name: Install dependencies
       run: |
         C:\Miniconda\condabin\conda.bat env update --file desktop_client\desktop\desktop\Installation\environment.yml --name base
