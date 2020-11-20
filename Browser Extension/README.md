@@ -1,4 +1,4 @@
-**#Cliview Browser Extension**
+**#Cliview Browser Extension#**
 ##Designed by Emin Bayramov
 
 *##Manifest.json has been created and published. 
