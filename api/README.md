@@ -1,4 +1,13 @@
-# API description
+# Backend
+
+## Installing on a raspberry pi:
+```
+curl -sL https://raw.githubusercontent.com/gyaur/CliView/master/api/install.sh | sudo sh
+
+```
+
+
+## API description
 
 All request and response bodies are empty unless specified otherwise
 
