@@ -36,7 +36,7 @@ pub struct OMXPlayer;
 
 impl Player for OMXPlayer {
     fn start(&self, media: &Url, volume: &Volume) -> Result<Popen> {
-        stream(&media, volume.volume)
+        stream(&media, *volume)
     }
 
     fn stop(&self, process: &mut Popen) -> Result<()> {

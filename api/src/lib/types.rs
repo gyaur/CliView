@@ -60,11 +60,15 @@ impl Volume {
     pub fn new(volume: i32) -> Self {
         Self { volume }
     }
+
+    pub fn as_milibells(&self) -> i32 {
+        (self.volume - 10) * 300
+    }
 }
 
 impl Default for Volume {
     fn default() -> Self {
-        Self { volume: 0 }
+        Self { volume: 5 }
     }
 }
 

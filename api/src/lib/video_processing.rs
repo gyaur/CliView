@@ -3,6 +3,7 @@ use std::error::Error;
 use std::io::Write;
 use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
+use crate::Volume;
 
 pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
     if url.is_ip() {
@@ -26,7 +27,7 @@ pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
 }
 
 #[cfg(target_arch = "arm")]
-pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
+pub fn stream(url: &Url, volume: Volume) -> Result<Popen, Box<dyn Error>> {
     let url = extract_url(url)?;
 
     let p = Popen::create(
@@ -38,7 +39,7 @@ pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
             "both",
             &url.url,
             "--vol",
-            &volume.to_string(),
+            &volume.as_milibells().to_string(),
         ],
         PopenConfig {
             stdin: Redirection::Pipe,
@@ -52,7 +53,7 @@ pub fn stream(url: &Url, volume: i32) -> Result<Popen, Box<dyn Error>> {
 }
 
 #[cfg(target_arch = "x86_64")]
-pub fn stream(_url: &Url, _volume: i32) -> Result<Popen, Box<dyn Error>> {
+pub fn stream(_url: &Url, _volume: Volume) -> Result<Popen, Box<dyn Error>> {
     let argv = &["ping", "-c", "10", "8.8.8.8"];
 
     let p = Popen::create(
