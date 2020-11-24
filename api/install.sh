@@ -13,6 +13,8 @@ echo "Getting latest version"
 
 wget $(curl -s https://api.github.com/repos/gyaur/CliView/releases/latest | grep 'browser_' | cut -d\" -f4) -q
 
+sudo chmod +x *
+
 echo "Setting up systemd services"
 
 # Proxy unit file
