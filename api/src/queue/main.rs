@@ -1,12 +1,12 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-use lib::Config as CliViewConfig;
 use lib::GenericResult;
 use lib::QueueState;
 use lib::Url;
 #[cfg(feature = "db")]
 use lib::{establish_connection, init_db, select_values, update_db};
 use lib::{extract_url, QueueStateSendable};
+use lib::{Config as CliViewConfig, CORS};
 use rocket::config::{Config, Environment};
 use rocket::http::Status;
 use rocket::State;
@@ -62,6 +62,7 @@ fn setup_rocket(cfg: CliViewConfig, test: bool) -> rocket::Rocket {
     rocket::custom(rocket_config)
         .mount("/", rocket::routes![front, queue_get, queue_post])
         .manage(state)
+        .attach(CORS())
 }
 fn main() -> GenericResult<()> {
     let cfg = CliViewConfig::load()?;

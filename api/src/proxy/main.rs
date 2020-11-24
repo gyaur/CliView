@@ -1,7 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-use lib::gen_proxy_function;
 use lib::Config as CliViewConfig;
 use lib::GenericResult as Result;
+use lib::{gen_proxy_function, CORS};
 use rocket::response::Redirect;
 use rocket::State;
 use rocket::{
@@ -54,6 +54,7 @@ fn setup_rocket() -> Result<Rocket> {
                 set_playback
             ],
         )
+        .attach(CORS())
         .manage(cfg);
 
     Ok(rocket)
