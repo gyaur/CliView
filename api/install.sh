@@ -11,7 +11,7 @@ cd CliView
 
 echo "Getting latest version"
 
-wget $(curl -s https://api.github.com/repos/gyaur/CliView/releases/latest | grep 'browser_' | cut -d\" -f4) -q
+wget $(curl -s https://api.github.com/repos/gyaur/CliView/releases/latest | grep 'browser_' | cut -d\" -f4) -q -N
 
 sudo chmod +x *
 
@@ -39,6 +39,7 @@ cat <<- EOM > cliview_queue.service
     [Service]
     ExecStart=/home/pi/CliView/queue
     Restart=on-failure
+    RestartSec=2
 
     [Install]
     WantedBy=multi-user.target
@@ -54,6 +55,7 @@ cat <<- EOM > cliview_command.service
     [Service]
     ExecStart=/home/pi/CliView/command
     Restart=on-failure
+    RestartSec=2
 
     [Install]
     WantedBy=multi-user.target
@@ -70,6 +72,7 @@ cat <<- EOM > cliview_streamer.service
     [Service]
     ExecStart=/home/pi/CliView/streamer
     Restart=on-failure
+    RestartSec=2
 
     [Install]
     WantedBy=multi-user.target
