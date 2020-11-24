@@ -1,9 +1,9 @@
 use crate::Url;
+use crate::Volume;
 use std::error::Error;
 use std::io::Write;
 use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
-use crate::Volume;
 
 pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
     if url.is_ip() {
