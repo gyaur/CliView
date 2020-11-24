@@ -1,5 +1,5 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-use lib::{CORS, Url, extract_url};
+use lib::{extract_url, Url, CORS};
 use lib::{Action, GenericResult as Result, Volume};
 use lib::{Ammount, PlaybackStatus};
 use lib::{CommandQueue, Config as CliViewConfig};
