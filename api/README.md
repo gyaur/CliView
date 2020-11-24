@@ -2,7 +2,7 @@
 
 ## Installing on a raspberry pi:
 ```
-curl -sL https://raw.githubusercontent.com/gyaur/CliView/master/api/install.sh | sudo sh
+curl -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/gyaur/CliView/api_dev/api/install.sh | sudo sh
 
 ```
 
