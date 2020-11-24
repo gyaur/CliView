@@ -16,7 +16,7 @@ wget $(curl -s https://api.github.com/repos/gyaur/CliView/releases/latest | grep
 echo "Setting up systemd services"
 
 # Proxy unit file
-read -r -d '' VAR << EOM
+cat << EOM > cliview_proxy.service
 [Unit]
 Description=CliView proxy service
 
@@ -28,57 +28,51 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOM
 
-echo "$VAR" > cliview_proxy.service
-
 # Queue unit file
-read -r -d '' VAR << EOM
-[Unit]
-Description=CliView queue service
-Requires=cliview_proxy.service
+cat <<- EOM > cliview_queue.service
+    [Unit]
+    Description=CliView queue service
+    Requires=cliview_proxy.service
 
-[Service]
-ExecStart=/home/pi/CliView/queue
-Restart=on-failure
+    [Service]
+    ExecStart=/home/pi/CliView/queue
+    Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
+    [Install]
+    WantedBy=multi-user.target
 EOM
 
-echo "$VAR" > cliview_queue.service
 
 # Command unit file
-read -r -d '' VAR << EOM
-[Unit]
-Description=CliView command service
-Requires=cliview_proxy.service
+cat <<- EOM > cliview_command.service
+    [Unit]
+    Description=CliView command service
+    Requires=cliview_proxy.service
 
-[Service]
-ExecStart=/home/pi/CliView/command
-Restart=on-failure
+    [Service]
+    ExecStart=/home/pi/CliView/command
+    Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
+    [Install]
+    WantedBy=multi-user.target
 EOM
-
-echo "$VAR" > cliview_command.service
 
 # Streamer unit file
-read -r -d '' VAR << EOM
-[Unit]
-Description=CliView queue
-Requires=cliview_proxy.service
-Requires=cliview_queue.service
-Requires=cliview_command.service
+cat <<- EOM > cliview_streamer.service
+    [Unit]
+    Description=CliView queue
+    Requires=cliview_proxy.service
+    Requires=cliview_queue.service
+    Requires=cliview_command.service
 
-[Service]
-ExecStart=/home/pi/CliView/streamer
-Restart=on-failure
+    [Service]
+    ExecStart=/home/pi/CliView/streamer
+    Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
+    [Install]
+    WantedBy=multi-user.target
 EOM
 
-echo "$VAR" > cliview_streamer.service
 
 sudo mv *.service /etc/systemd/system/
 
