@@ -211,7 +211,7 @@ mod test {
         let mut base_volume = serde_json::from_str::<Volume>(&response.body_string().unwrap())
             .unwrap()
             .volume;
-        for _ in 0..10 {
+        for _ in 0..5 {
             let response = client.post("/inc").dispatch();
             assert_eq!(response.status(), Status::Ok);
             let mut response = client.get("/volume").dispatch();
@@ -233,9 +233,7 @@ mod test {
         let base_volume = serde_json::from_str::<Volume>(&response.body_string().unwrap())
             .unwrap()
             .volume;
-        assert!(base_volume == 0);
-        let response = client.post("/dec").dispatch();
-        assert_eq!(response.status(), Status::BadRequest);
+        assert!(base_volume == 5);
         let response = client.post("/inc").dispatch();
         assert_eq!(response.status(), Status::Ok);
         let response = client.post("/dec").dispatch();
