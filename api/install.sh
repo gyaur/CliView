@@ -13,7 +13,9 @@ echo "Getting latest version"
 
 wget $(curl -s https://api.github.com/repos/gyaur/CliView/releases/latest | grep 'browser_' | cut -d\" -f4) -q -N
 
+sudo chown -R pi .
 sudo chmod +x *
+
 
 echo "Setting up systemd services"
 
@@ -37,6 +39,7 @@ cat <<- EOM > cliview_queue.service
     Requires=cliview_proxy.service
 
     [Service]
+    Environment="DATABASE_URL=sqlite:////home/pi/CliView/db.sqlite"
     ExecStart=/home/pi/CliView/queue
     Restart=on-failure
     RestartSec=2
@@ -64,7 +67,7 @@ EOM
 # Streamer unit file
 cat <<- EOM > cliview_streamer.service
     [Unit]
-    Description=CliView queue
+    Description=CliView streamer service
     Requires=cliview_proxy.service
     Requires=cliview_queue.service
     Requires=cliview_command.service
