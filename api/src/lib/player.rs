@@ -1,4 +1,4 @@
-use std::{time::Duration, thread::sleep};
+use std::{thread::sleep, time::Duration};
 
 use crate::{stream, Action, Ammount, Config, PlaybackStatus, Url, Volume};
 use crate::{write_to_stdin, GenericResult as Result};
