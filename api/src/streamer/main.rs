@@ -42,6 +42,7 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                         playback_address,
                     );
                     println!("{:?}", result);
+                    assert!(result.is_ok());
                 }
                 if let Some(_val) = process.poll() {
                     break;
