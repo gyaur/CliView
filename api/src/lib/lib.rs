@@ -1,5 +1,4 @@
 mod config;
-mod cors;
 #[cfg(feature = "db")]
 mod db;
 mod macros;
@@ -8,7 +7,6 @@ mod types;
 mod video_processing;
 
 pub use config::*;
-pub use cors::*;
 #[cfg(feature = "db")]
 pub use db::*;
 pub use macros::*;

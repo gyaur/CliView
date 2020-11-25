@@ -1,7 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+use lib::gen_proxy_function;
 use lib::Config as CliViewConfig;
 use lib::GenericResult as Result;
-use lib::{gen_proxy_function, CORS};
 use rocket::response::Redirect;
 use rocket::State;
 use rocket::{
@@ -35,6 +35,8 @@ fn setup_rocket() -> Result<Rocket> {
         .finalize()
         .unwrap();
 
+    let cors = rocket_cors::CorsOptions::default().to_cors().unwrap();
+
     let rocket = rocket::custom(rocket_config)
         .mount(
             "/",
@@ -54,7 +56,7 @@ fn setup_rocket() -> Result<Rocket> {
                 set_playback
             ],
         )
-        .attach(CORS())
+        .attach(cors)
         .manage(cfg);
 
     Ok(rocket)

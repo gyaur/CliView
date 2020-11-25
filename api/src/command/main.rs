@@ -1,5 +1,5 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-use lib::{extract_url, Url, CORS};
+use lib::{extract_url, Url};
 use lib::{Action, GenericResult as Result, Volume};
 use lib::{Ammount, PlaybackStatus};
 use lib::{CommandQueue, Config as CliViewConfig};
@@ -110,6 +110,8 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
         .finalize()
         .unwrap();
 
+    let cors = rocket_cors::CorsOptions::default().to_cors().unwrap();
+
     rocket::custom(rocket_config)
         .mount(
             "/",
@@ -125,10 +127,10 @@ fn setup_rocket(cfg: CliViewConfig) -> rocket::Rocket {
                 play,
                 pause,
                 playback,
-                set_playback
+                set_playback,
             ],
         )
-        .attach(CORS())
+        .attach(cors)
         .manage(CommandQueue::new())
 }
 fn main() -> Result<()> {
