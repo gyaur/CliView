@@ -35,6 +35,8 @@ fn setup_rocket() -> Result<Rocket> {
         .finalize()
         .unwrap();
 
+    let cors = rocket_cors::CorsOptions::default().to_cors().unwrap();
+
     let rocket = rocket::custom(rocket_config)
         .mount(
             "/",
@@ -54,6 +56,7 @@ fn setup_rocket() -> Result<Rocket> {
                 set_playback
             ],
         )
+        .attach(cors)
         .manage(cfg);
 
     Ok(rocket)

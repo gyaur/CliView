@@ -1,4 +1,13 @@
-# API description
+# Backend
+
+## Installing on a raspberry pi:
+```
+curl -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/gyaur/CliView/api_dev/api/install.sh | sudo sh
+
+```
+
+
+## API description
 
 All request and response bodies are empty unless specified otherwise
 

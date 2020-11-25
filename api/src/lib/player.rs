@@ -1,4 +1,4 @@
-use std::thread::sleep;
+use std::{thread::sleep, time::Duration};
 
 use crate::{stream, Action, Ammount, Config, PlaybackStatus, Url, Volume};
 use crate::{write_to_stdin, GenericResult as Result};
@@ -36,7 +36,7 @@ pub struct OMXPlayer;
 
 impl Player for OMXPlayer {
     fn start(&self, media: &Url, volume: &Volume) -> Result<Popen> {
-        stream(&media, volume.volume)
+        stream(&media, *volume)
     }
 
     fn stop(&self, process: &mut Popen) -> Result<()> {
@@ -64,6 +64,7 @@ impl Player for OMXPlayer {
                 -600 => write_to_stdin(process, "\x1b\x5b\x42")?,
                 _ => panic!("something has gone increadibly wrong"),
             };
+            sleep(Duration::from_millis(50));
         }
         Ok(())
     }
@@ -84,12 +85,15 @@ impl Player for OMXPlayer {
     ) -> Result<()> {
         let delta = current_volume.volume - volume.volume;
         *current_volume = *volume;
-        for _ in 0..delta.abs() {
+        println!("{:?}", delta);
+        for i in 0..delta.abs() {
+            println!("{:?}", i);
             if delta > 0 {
                 self.decrease_volume(&mut process)?;
             } else {
                 self.increase_volume(&mut process)?;
             }
+            sleep(Duration::from_millis(50));
         }
         Ok(())
     }

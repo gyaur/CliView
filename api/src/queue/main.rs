@@ -11,6 +11,7 @@ use rocket::config::{Config, Environment};
 use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
+use rocket_cors;
 
 #[rocket::get("/front")]
 fn front(state: State<QueueState>) -> Json<Option<Url>> {
@@ -59,9 +60,12 @@ fn setup_rocket(cfg: CliViewConfig, test: bool) -> rocket::Rocket {
         }
     }
 
+    let cors = rocket_cors::CorsOptions::default().to_cors().unwrap();
+
     rocket::custom(rocket_config)
         .mount("/", rocket::routes![front, queue_get, queue_post])
         .manage(state)
+        .attach(cors)
 }
 fn main() -> GenericResult<()> {
     let cfg = CliViewConfig::load()?;
