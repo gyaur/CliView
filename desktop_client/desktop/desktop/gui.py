@@ -58,7 +58,7 @@ class ResposeWriterGUI:
             width=13,
             command=lambda: self.handler.upload(
                 link_list,
-                upload_links.get()) if upload_links.get() != "" else self.handler.error("Provide a link!"))
+                upload_links.get()) if upload_links.get() != "" else self.handler.load_local_file(link_list))
         upload_button.grid(row=0, column=3)
 
         cast_button = ttk.Button(input_frame, text="CAST", width=13, command=lambda: self.handler.cast(

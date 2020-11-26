@@ -4,6 +4,7 @@ import requests
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
 from constants import MCAST, NEXT, SCROLL, VOLUME, P_STATUS, START, STOP, SETTINGS
+import validators
 
 
 # This is the backend...
@@ -22,6 +23,9 @@ class Functionality:
                          "--stop": self.cmd_stop
                          }
 
+    def is_valid_link(self, link: str) -> bool:
+        return validators.url(link)
+
     def error(self, msg: str):
         messagebox.showerror(title="Error", message=msg)
 
@@ -34,13 +38,24 @@ class Functionality:
 
     # It will cast the video at once
     def cmd_cast(self, link: list):
-        err = self.responder.post(MCAST, {"url": link[0]})
-        if err != 200:
-            raise CustomError(f"An error occurred, server response : {err}")
+
+        err = 0
+        if self.is_valid_link(link[0]):
+            err = self.responder.post(MCAST, {"url": link[0]})
+        else:
+            err = self.responder.post(
+                MCAST, {"url": self.responder.address + link[0]})
+
+        return err
 
     # This will add all links to a queue
     def cmd_mcast(self, links: list):
-        codes = [self.responder.post(MCAST, {"url": link}) for link in links]
+        codes = [
+            self.responder.post(
+                MCAST, {
+                    "url": link}) if self.is_valid_link(link) else self.responder.post(
+                MCAST, {
+                    "url": self.responder.address + link}) for link in links]
         res = next(((i, x) for (i, x) in enumerate(codes) if x != 200), None)
 
         return res
@@ -155,27 +170,9 @@ class Responder:
         r = requests.post(self.address + route, json=msg)
         return r.status_code
 
-        '''
-        For later...
-        try:
-            r = requests.post(self.address+route, params=msg)
-            return r.status_code
-        except:
-            return 500
-        '''
-
     def get(self, route, msg=None) -> (dict, int):
         r = requests.get(self.address + route, json=msg)
         return (r.json(), r.status_code)
-
-        '''
-        For later...
-        try:
-            r = requests.get(self.address+route, params=msg)
-            return (r.json(), r.status_code)
-        except:
-            return (None, 500)
-        '''
 
 
 class CustomError(Exception):

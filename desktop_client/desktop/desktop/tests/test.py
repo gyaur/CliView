@@ -47,10 +47,33 @@ def test_pozitive():
         assert handler.cmd_volume([10]) == 200
         assert handler.cmd_volume([11]) == 400
 
+    # /cast [POST] (Only with local files)
+    def cast():
+        assert handler.cmd_cast(["C:/Home/video.mp4"]) == 200  # Absolute path
+        assert handler.cmd_cast(["path/video.mp4"]) == 200  # Relative path
+        # Multiple absolute paths
+        assert handler.cmd_cast(
+            ["C:/Home/video.mp4", "D:/Home/video.mp4"]) == 200
+        # Multiple relative paths
+        assert handler.cmd_cast(["path/video.mp4", "/video.mp4"]) == 200
+
+    # /mcast [POST] (Only with local files)
+    def mcast():
+        assert handler.cmd_mcast(
+            ["C:/Home/video.mp4"]) is None  # Absolute path
+        assert handler.cmd_mcast(["path/video.mp4"]) is None  # Relative path
+        # Multiple absolute paths
+        assert handler.cmd_mcast(
+            ["C:/Home/video.mp4", "D:/Home/video.mp4"]) is None
+        # Multiple relative paths
+        assert handler.cmd_mcast(["path/video.mp4", "/video.mp4"]) is None
+
     skip()
     seek()
     start()
     volume()
+    cast()
+    mcast()
 
 
 if __name__ == "__main__":

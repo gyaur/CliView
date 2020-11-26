@@ -3,6 +3,7 @@ import requests
 import tkinter as tk
 from tkinter import messagebox, ttk, filedialog
 from constants import MCAST, NEXT, SCROLL, VOLUME, P_STATUS, START, STOP, SETTINGS
+import validators
 
 
 # This is the backend...
@@ -21,6 +22,9 @@ class Functionality:
                          "--stop": self.cmd_stop
                          }
 
+    def is_valid_link(self, link: str) -> bool:
+        return validators.url(link)
+
     def error(self, msg: str):
         messagebox.showerror(title="Error", message=msg)
 
@@ -33,13 +37,26 @@ class Functionality:
 
     # It will cast the video at once
     def cmd_cast(self, link: list):
-        err = self.responder.post(MCAST, {"url": link[0]})
+
+        err = 0
+        if self.is_valid_link(link[0]):
+            err = self.responder.post(MCAST, {"url": link[0]})
+        else:
+            err = self.responder.post(
+                MCAST, {"url": self.responder.address + link[0]})
+
         if err != 200:
             raise CustomError(f"An error occurred, server response : {err}")
 
     # This will add all links to a queue
     def cmd_mcast(self, links: list):
-        codes = [self.responder.post(MCAST, {"url": link}) for link in links]
+
+        codes = [
+            self.responder.post(
+                MCAST, {
+                    "url": link}) if self.is_valid_link(link) else self.responder.post(
+                MCAST, {
+                    "url": self.responder.address + link}) for link in links]
         res = next(((i, x) for (i, x) in enumerate(codes) if x != 200), None)
         if res is not None:
             raise CustomError(
@@ -101,6 +118,13 @@ class Functionality:
         with open(filename, "r") as file:
             data = file.read().split("\n")
             tkList.insert("end", *data)
+
+    def load_local_file(self, tkList: tk.Listbox):
+        filename = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select your playlist")
+
+        tkList.insert("end", filename)
 
     def cmd_set(self, settings: list):
         if len(settings) != 2:
@@ -169,6 +193,14 @@ class Responder:
         return r.status_code
 
         '''
+        http_client.HTTPConnection.debuglevel = 1
+        logging.basicConfig()
+        logging.getLogger().setLevel(logging.DEBUG)
+        requests_log = logging.getLogger("requests.packages.urllib3")
+        requests_log.setLevel(logging.DEBUG)
+        requests_log.propagate = True
+
+
         For later...
         try:
             r = requests.post(self.address+route, params=msg)
