@@ -41,7 +41,7 @@ fn playback(state: State<CommandQueue>) -> Json<PlaybackStatus> {
 #[rocket::post("/stream", data = "<url>")]
 fn stream(state: State<CommandQueue>, url: Json<Url>) {
     let mut queue = state.queue.lock().unwrap();
-    let url = extract_url(&url.0).unwrap();
+    let url = extract_url(url.0).unwrap();
     queue.push_front(Action::Stream(url));
 }
 

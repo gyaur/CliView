@@ -1,11 +1,18 @@
 use crate::Url;
 use crate::Volume;
+use cached::proc_macro::cached;
 use std::error::Error;
 use std::io::Write;
 use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
 
-pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
+#[derive(Debug, Clone)]
+pub enum CustomError {
+    FeatureError(String),
+}
+
+#[cached(size = 100)]
+pub fn extract_url(url: Url) -> Result<Url, CustomError> {
     if url.is_ip() {
         return Ok(url.clone());
     }
@@ -13,16 +20,24 @@ pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
     let output = YoutubeDl::new(&url.url)
         .socket_timeout("15")
         .format("best")
-        .run()?;
+        .run();
 
-    let video = match output {
-        youtube_dl::YoutubeDlOutput::Playlist(_) => return Err("Playlist are not supported".into()),
+    if let Err(_) = output {
+        return Err(CustomError::FeatureError("youtube_dl error".into()));
+    }
+
+    let video = match output.unwrap() {
+        youtube_dl::YoutubeDlOutput::Playlist(_) => {
+            return Err(CustomError::FeatureError(
+                "Playlist are not supported".into(),
+            ))
+        }
         youtube_dl::YoutubeDlOutput::SingleVideo(video) => video,
     };
 
     match video.url {
         Some(extracted_url) => Ok(Url::new(url.url.clone(), Some(extracted_url))),
-        None => Err("Something is fucked".into()),
+        None => Err(CustomError::FeatureError("Something is fucked".into())),
     }
 }
 

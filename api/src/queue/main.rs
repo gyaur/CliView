@@ -36,7 +36,7 @@ fn current(state: State<QueueState>) -> Json<Option<Url>> {
 
 #[rocket::post("/queue", data = "<data>")]
 fn queue_post(state: State<QueueState>, data: Json<Url>) -> Status {
-    let res = extract_url(&data.0);
+    let res = extract_url(data.0);
     match res {
         Ok(url) => {
             let mut queue = state.queue.lock().unwrap();
