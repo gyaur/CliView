@@ -52,6 +52,8 @@ pub fn update_db(urls: &VecDeque<Url>, em: &mut EntityManager) {
 
 #[cfg(test)]
 mod test {
+    use std::collections::VecDeque;
+
     use rustorm::EntityManager;
 
     use crate::{establish_test_connection, init_db, select_values, update_db, Url};
@@ -83,7 +85,7 @@ mod test {
         init_db(&mut em);
         let values = select_values(&mut em);
         assert!(values.len() == 0);
-        let values_to_insert = vec![
+        let values_to_insert: VecDeque<Url> = vec![
             Url::from(String::from("test1")),
             Url::from(String::from("test2")),
         ]
