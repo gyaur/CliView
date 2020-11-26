@@ -19,12 +19,19 @@ fn front(state: State<QueueState>) -> Json<Option<Url>> {
     let value = queue.pop_front();
     #[cfg(feature = "db")]
     update_db(&queue.clone(), &mut establish_connection());
+    let mut playing = state.playing.lock().unwrap();
+    *playing = value.clone();
     Json(value)
 }
 
 #[rocket::get("/queue")]
 fn queue_get(state: State<QueueState>) -> Json<QueueStateSendable> {
     Json(state.to_response())
+}
+
+#[rocket::get("/current")]
+fn current(state: State<QueueState>) -> Json<Option<Url>> {
+    Json(state.current())
 }
 
 #[rocket::post("/queue", data = "<data>")]
@@ -63,7 +70,7 @@ fn setup_rocket(cfg: CliViewConfig, test: bool) -> rocket::Rocket {
     let cors = rocket_cors::CorsOptions::default().to_cors().unwrap();
 
     rocket::custom(rocket_config)
-        .mount("/", rocket::routes![front, queue_get, queue_post])
+        .mount("/", rocket::routes![front, queue_get, queue_post, current])
         .manage(state)
         .attach(cors)
 }

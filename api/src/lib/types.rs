@@ -121,6 +121,7 @@ pub enum Action {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueueState {
     pub queue: Mutex<VecDeque<Url>>,
+    pub playing: Mutex<Option<Url>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -138,6 +139,7 @@ impl QueueState {
     pub fn new() -> Self {
         Self {
             queue: Mutex::from(VecDeque::new()),
+            playing: Mutex::from(None),
         }
     }
     pub fn to_response(&self) -> QueueStateSendable {
@@ -145,12 +147,20 @@ impl QueueState {
 
         QueueStateSendable::new(queue.iter().map(|x| x.to_owned()).collect::<Vec<Url>>())
     }
+
+    pub fn current(&self) -> Option<Url> {
+        let playing = self.playing.lock().unwrap();
+        playing.clone()
+    }
 }
 
 impl From<Vec<Url>> for QueueState {
     fn from(urls: Vec<Url>) -> Self {
         let queue: Mutex<VecDeque<Url>> = Mutex::new(urls.into_iter().collect());
-        QueueState { queue }
+        QueueState {
+            queue,
+            playing: Mutex::from(None),
+        }
     }
 }
 
