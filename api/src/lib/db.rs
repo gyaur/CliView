@@ -89,9 +89,11 @@ mod test {
         ]
         .into_iter()
         .collect();
+        println!("{:?}", values_to_insert.len());
         insert_values(&values_to_insert, &mut em);
+        println!("{:?}", values_to_insert.len());
         let values = select_values(&mut em);
-        println!("{:?}",values.len());
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         clear_table("url", &mut em);
         let values = select_values(&mut em);
@@ -112,7 +114,7 @@ mod test {
         .collect();
         insert_values(&values_to_insert, &mut em);
         let values = select_values(&mut em);
-        println!("{:?}",values.len());
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         assert!(values.iter().zip(values_to_insert).all(|(x, y)| x == &y));
     }
@@ -131,7 +133,7 @@ mod test {
         .collect();
         insert_values(&values_to_insert, &mut em);
         let values = select_values(&mut em);
-        println!("{:?}",values.len());
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         let values_update = vec![
             Url::from(String::from("test3")),
