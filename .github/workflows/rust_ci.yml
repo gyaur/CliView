@@ -3,6 +3,9 @@ name: Rust Continuous integration
 on:
   push:
     branches: [master, api_dev]
+  pull_request:
+    branches:
+    - master
 
 env:
   CARGO_TERM_COLOR: always
