@@ -21,7 +21,7 @@ pub fn extract_url(url: &Url) -> Result<Url, Box<dyn Error>> {
     };
 
     match video.url {
-        Some(url) => Ok(Url::new(url)),
+        Some(extracted_url) => Ok(Url::new(url.url.clone(), Some(extracted_url))),
         None => Err("Something is fucked".into()),
     }
 }
@@ -37,7 +37,7 @@ pub fn stream(url: &Url, volume: Volume) -> Result<Popen, Box<dyn Error>> {
             "-r",
             "-o",
             "both",
-            &url.url,
+            &url.extracted_url.unwrap(),
             "--vol",
             &volume.as_milibells().to_string(),
         ],
