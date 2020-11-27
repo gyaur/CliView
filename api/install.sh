@@ -20,16 +20,19 @@ sudo chmod +x *
 echo "Setting up systemd services"
 
 # Proxy unit file
-cat << EOM > cliview_proxy.service
-[Unit]
-Description=CliView proxy service
+cat <<- EOM > cliview_proxy.service
+    [Unit]
+    Description=CliView proxy service
+    Before=cliview_queue.service
+    Before=cliview_command.service
+    Before=cliview_streamer.service
 
-[Service]
-ExecStart=/home/pi/CliView/proxy
-Restart=on-failure
+    [Service]
+    ExecStart=/home/pi/CliView/proxy
+    Restart=on-failure
 
-[Install]
-WantedBy=multi-user.target
+    [Install]
+    WantedBy=multi-user.target
 EOM
 
 # Queue unit file
@@ -37,6 +40,9 @@ cat <<- EOM > cliview_queue.service
     [Unit]
     Description=CliView queue service
     Requires=cliview_proxy.service
+    After=cliview_proxy.service
+    Before=cliview_streamer.service
+
 
     [Service]
     Environment="DATABASE_URL=sqlite:////home/pi/CliView/db.sqlite"
@@ -54,6 +60,8 @@ cat <<- EOM > cliview_command.service
     [Unit]
     Description=CliView command service
     Requires=cliview_proxy.service
+    After=cliview_proxy.service
+    Before=cliview_streamer.service
 
     [Service]
     ExecStart=/home/pi/CliView/command
@@ -71,6 +79,10 @@ cat <<- EOM > cliview_streamer.service
     Requires=cliview_proxy.service
     Requires=cliview_queue.service
     Requires=cliview_command.service
+    After=cliview_proxy.service
+    After=cliview_queue.service
+    After=cliview_command.service
+
 
     [Service]
     ExecStart=/home/pi/CliView/streamer

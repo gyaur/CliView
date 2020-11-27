@@ -25,7 +25,8 @@ pub fn establish_test_connection() -> EntityManager {
 pub fn init_db(em: &mut EntityManager) {
     let create_sql = "CREATE TABLE url(
         id integer PRIMARY KEY AUTOINCREMENT,
-        url text)";
+        url text,
+        extracted_url text)";
     em.db().execute_sql_with_return(create_sql, &[]);
 }
 
@@ -52,6 +53,8 @@ pub fn update_db(urls: &VecDeque<Url>, em: &mut EntityManager) {
 
 #[cfg(test)]
 mod test {
+    use std::collections::VecDeque;
+
     use rustorm::EntityManager;
 
     use crate::{establish_test_connection, init_db, select_values, update_db, Url};
@@ -83,14 +86,17 @@ mod test {
         init_db(&mut em);
         let values = select_values(&mut em);
         assert!(values.len() == 0);
-        let values_to_insert = vec![
+        let values_to_insert: VecDeque<Url> = vec![
             Url::from(String::from("test1")),
             Url::from(String::from("test2")),
         ]
         .into_iter()
         .collect();
+        println!("{:?}", values_to_insert.len());
         insert_values(&values_to_insert, &mut em);
+        println!("{:?}", values_to_insert.len());
         let values = select_values(&mut em);
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         clear_table("url", &mut em);
         let values = select_values(&mut em);
@@ -111,6 +117,7 @@ mod test {
         .collect();
         insert_values(&values_to_insert, &mut em);
         let values = select_values(&mut em);
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         assert!(values.iter().zip(values_to_insert).all(|(x, y)| x == &y));
     }
@@ -129,6 +136,7 @@ mod test {
         .collect();
         insert_values(&values_to_insert, &mut em);
         let values = select_values(&mut em);
+        println!("{:?}", values.len());
         assert!(values.len() == 2);
         let values_update = vec![
             Url::from(String::from("test3")),

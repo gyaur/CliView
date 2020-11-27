@@ -12,7 +12,7 @@ db = ["rustorm"]
 
 [dependencies]
 subprocess = "0.2"
-youtube_dl = "0.5"
+youtube_dl = "0.6"
 rocket_cors = "0.5.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -22,6 +22,7 @@ dotenv = "0.15"
 rustorm = { version = "0.17", features = ["with-sqlite"],optional=true}
 reqwest = { version = "0.10", features = ["blocking", "json"] }
 regex = "1"
+cached = "0"
 
 [dependencies.rocket_contrib]
 version = "0.4.5"

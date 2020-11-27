@@ -11,43 +11,65 @@ pub type GenericResult<T> = Result<T, Error>;
 
 #[cfg(feature = "db")]
 #[derive(
-    Debug, Clone, Serialize, Deserialize, ToDao, ToColumnNames, ToTableName, FromDao, PartialEq,
+    Debug,
+    Clone,
+    Serialize,
+    Deserialize,
+    ToDao,
+    ToColumnNames,
+    ToTableName,
+    FromDao,
+    PartialEq,
+    Eq,
+    Hash,
 )]
 pub struct Url {
     pub url: String,
+    pub extracted_url: Option<String>,
 }
 #[cfg(not(feature = "db"))]
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 pub struct Url {
     pub url: String,
+    pub extracted_url: Option<String>,
 }
 #[cfg(feature = "db")]
 #[derive(Debug, FromDao, ToColumnNames, ToTableName)]
 pub struct RetriveUrl {
     pub id: i32,
     pub url: String,
+    pub extracted_url: Option<String>,
 }
 
 impl Url {
-    pub fn new(url: String) -> Self {
-        Self { url }
+    pub fn new(url: String, extracted_url: Option<String>) -> Self {
+        Self { url, extracted_url }
     }
     pub fn is_ip(&self) -> bool {
         let re = regex::Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}").unwrap();
         re.is_match(self.url.as_str())
     }
+    pub fn add_extracted_url(&mut self, extracted_url: String) {
+        self.extracted_url = Some(extracted_url);
+    }
 }
 
 impl From<String> for Url {
     fn from(inc: String) -> Self {
-        Url { url: inc }
+        Url {
+            url: inc,
+            extracted_url: None,
+        }
     }
 }
 
 #[cfg(feature = "db")]
 impl From<RetriveUrl> for Url {
     fn from(inc: RetriveUrl) -> Self {
-        Url::from(inc.url)
+        Url {
+            url: inc.url,
+            extracted_url: inc.extracted_url,
+        }
     }
 }
 
@@ -109,6 +131,7 @@ pub enum Action {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct QueueState {
     pub queue: Mutex<VecDeque<Url>>,
+    pub playing: Mutex<Option<Url>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -126,6 +149,7 @@ impl QueueState {
     pub fn new() -> Self {
         Self {
             queue: Mutex::from(VecDeque::new()),
+            playing: Mutex::from(None),
         }
     }
     pub fn to_response(&self) -> QueueStateSendable {
@@ -133,12 +157,20 @@ impl QueueState {
 
         QueueStateSendable::new(queue.iter().map(|x| x.to_owned()).collect::<Vec<Url>>())
     }
+
+    pub fn current(&self) -> Option<Url> {
+        let playing = self.playing.lock().unwrap();
+        playing.clone()
+    }
 }
 
 impl From<Vec<Url>> for QueueState {
     fn from(urls: Vec<Url>) -> Self {
         let queue: Mutex<VecDeque<Url>> = Mutex::new(urls.into_iter().collect());
-        QueueState { queue }
+        QueueState {
+            queue,
+            playing: Mutex::from(None),
+        }
     }
 }
 
