@@ -1,9 +1,6 @@
-#rectangle_1{
-position: absolute;
+body{
 width: 373px;
 height: 147px;
-left: 1088px;
-top: -10px;
 background: #F4ABC4;
 }
 #head_text{

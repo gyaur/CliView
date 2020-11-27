@@ -1,21 +1,27 @@
 {
-  "manifest_version": 2,
-
-  "name": "Cliview",
-  "description": "Streaming your Video",
-  "version": "1.0",
   
-
-  "browser_action": {
-    "default_popup": "popup.html"
+  "manifest_version":2,
+  "name":"Cliview Extension",
+  "version":"2.0.1",
+  "description":"This is a hybrid technology that streams your video to Tv",
+  "author":"Emin Bayramov",
+  "icons":{
+    "128":"clogo.png"
   },
+  
+  "browser_action":{
+    "default_popup":"popup.html",
+    "default_icon":"clogo.png",
+    "default_title":"Cliview Extension"
 
-  "background": {
-    "scripts": ["eventPage.js"],
-    "persistent": true
   },
-
-  "permissions": [
-            "contextMenus"
-        ]
+  
+  "permissions":["activeTab"],
+  "content_scripts": [
+    {
+      "js": ["popup.js"],
+      "css": ["popup.css"],
+      "matches": ["http://*/*"] 
+    }
+  ]
 }
