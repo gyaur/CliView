@@ -11,7 +11,7 @@ pub enum CustomError {
     FeatureError(String),
 }
 
-// #[cached(size = 100)]
+#[cached(size = 100)]
 pub fn extract_url(url: Url) -> Result<Url, CustomError> {
     if url.is_ip() {
         return Ok(url.clone());

@@ -25,7 +25,8 @@ pub fn establish_test_connection() -> EntityManager {
 pub fn init_db(em: &mut EntityManager) {
     let create_sql = "CREATE TABLE url(
         id integer PRIMARY KEY AUTOINCREMENT,
-        url text)";
+        url text,
+        extracted_url text)";
     em.db().execute_sql_with_return(create_sql, &[]);
 }
 
@@ -36,8 +37,7 @@ fn clear_table(table_name: &str, em: &mut EntityManager) {
 
 fn insert_values(urls: &VecDeque<Url>, em: &mut EntityManager) {
     for url in urls.iter() {
-        let res = em.insert::<Url, RetriveUrl>(&[url]);
-        println!("{:?}", res);
+        em.insert::<Url, RetriveUrl>(&[url]);
     }
 }
 
