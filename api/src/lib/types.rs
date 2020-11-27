@@ -11,24 +11,14 @@ pub type GenericResult<T> = Result<T, Error>;
 
 #[cfg(feature = "db")]
 #[derive(
-    Debug,
-    Clone,
-    Serialize,
-    Deserialize,
-    ToDao,
-    ToColumnNames,
-    ToTableName,
-    FromDao,
-    PartialEq,
-    Eq,
-    Hash,
+    Debug, Clone, Serialize, Deserialize, ToDao, ToColumnNames, ToTableName, FromDao, PartialEq,
 )]
 pub struct Url {
     pub url: String,
     pub extracted_url: Option<String>,
 }
 #[cfg(not(feature = "db"))]
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 pub struct Url {
     pub url: String,
     pub extracted_url: Option<String>,

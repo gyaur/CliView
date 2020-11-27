@@ -36,7 +36,8 @@ fn clear_table(table_name: &str, em: &mut EntityManager) {
 
 fn insert_values(urls: &VecDeque<Url>, em: &mut EntityManager) {
     for url in urls.iter() {
-        em.insert::<Url, RetriveUrl>(&[url]);
+        let res = em.insert::<Url, RetriveUrl>(&[url]);
+        println!("{:?}", res);
     }
 }
 
