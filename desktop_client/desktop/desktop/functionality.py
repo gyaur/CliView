@@ -1,6 +1,7 @@
 import json
 import requests
 import tkinter as tk
+from PIL import Image, ImageTk
 from tkinter import messagebox, ttk, filedialog
 from constants import MCAST, NEXT, SCROLL, VOLUME, P_STATUS, START, STOP, SETTINGS
 import validators
@@ -156,14 +157,14 @@ class Functionality:
 
         def start(btn: ttk.Button):
             cmd, label = "", ""
+
             if self.is_music_playing():
                 cmd = STOP
-                label = "START"
+                label = "play"
             else:
                 cmd = START
-                label = "STOP"
+                label = "stop"
 
-            btn["text"] = label
             self.responder.post(cmd)
 
         commands = {"bbb": bbb, "bb": bb, "ff": ff, "fff": fff, "start": start}

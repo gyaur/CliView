@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import os
 from constants import LOW_V, HIGH_V, START_V
 
+#https://stackoverflow.com/questions/3966303/tkinter-slider-how-to-trigger-the-event-only-when-the-iteraction-is-complete
 
 class ResposeWriterGUI:
     def __init__(self):
@@ -16,21 +17,28 @@ class ResposeWriterGUI:
         main_window.title("CliView")
         main_window.geometry("500x700")
         main_window.resizable(False, False)
-        # main_window.config(bg="skyblue")
+        
 
+        #Background image
+        foot_img = ImageTk.PhotoImage(Image.open("Pictures/background.png").resize((500, 700), Image.ANTIALIAS))
+        canvas = tk.Canvas(main_window, width=500, height=700)
+        canvas.create_image(0,0,anchor='nw',image=foot_img)
+        canvas.image = foot_img
+        canvas.place(x=0, y=0, relwidth=1, relheight=1)
+        
         # Styles :
         mixer_style = ttk.Style().configure('Horizontal.TScale',
                                             sliderthickness=100)
 
         # Setting up frames
-        logo_frame = tk.Frame(main_window, width=500, height=200, bg="grey")
-        logo_frame.pack(side="top", fill="x")
+        logo_frame = tk.Frame(main_window, width=500, height=200)
+        logo_frame.pack(side="top", pady=(5, 25))
 
         input_frame = tk.Frame(main_window, width=200, height=50)
         input_frame.pack(anchor="center")
 
         links_frame = tk.Frame(main_window, width=500, height=200)
-        links_frame.pack(side="top", fill="x", anchor="center")
+        links_frame.pack(side="top", anchor="center")
 
         control_frame = tk.Frame(main_window, width=200, height=50)
         control_frame.pack(anchor="center", pady=(50, 0))
@@ -43,7 +51,7 @@ class ResposeWriterGUI:
 
         # Logo frame
         logo = ImageTk.PhotoImage(Image.open(
-            "Pictures/logo.png").resize((200, 200), Image.ANTIALIAS))
+            "Pictures/logo.png").resize((150, 150), Image.ANTIALIAS))
         logo_label = tk.Label(logo_frame, bg="#87CEFA", image=logo)
         logo_label.image = logo
         logo_label.pack(anchor="center")
@@ -73,28 +81,48 @@ class ResposeWriterGUI:
         link_list.pack(anchor="center")
 
         # Control frame
+        bbb_icon = ImageTk.PhotoImage(Image.open(
+            "Pictures/bbb.png").resize((40, 40), Image.ANTIALIAS))
+        bb_icon  = ImageTk.PhotoImage(Image.open(
+            "Pictures/bb.png").resize((40, 40), Image.ANTIALIAS))
+        ff_icon  = ImageTk.PhotoImage(Image.open(
+            "Pictures/ff.png").resize((40, 40), Image.ANTIALIAS))
+        fff_icon = ImageTk.PhotoImage(Image.open(
+            "Pictures/fff.png").resize((40, 40), Image.ANTIALIAS))
+        strt_icon= ImageTk.PhotoImage(Image.open(
+            "Pictures/play.png").resize((40, 40), Image.ANTIALIAS))
+
         bbb_button = ttk.Button(
             control_frame,
-            text="BBB",
+            image = bbb_icon,
             command=lambda: self.handler.scroll_video("bbb"))
+        bbb_button.image = bbb_icon
+
         bb_button = ttk.Button(
             control_frame,
-            text="BB",
+            image = bb_icon,
             command=lambda: self.handler.scroll_video("bb"))
+        bb_button.image = bb_icon
+
         start_button = ttk.Button(
             control_frame,
-            text="START",
+            image = strt_icon,
             command=lambda: self.handler.scroll_video(
                 "start",
                 start_button))
+        start_button.image = strt_icon
+
         ff_button = ttk.Button(
             control_frame,
-            text="FF",
+            image = ff_icon,
             command=lambda: self.handler.scroll_video("ff"))
+        ff_button.image = ff_icon
+
         fff_button = ttk.Button(
             control_frame,
-            text="FFF",
+            image = fff_icon,
             command=lambda: self.handler.scroll_video("fff"))
+        fff_button.image = fff_icon
 
         bbb_button.grid(row=0, column=0)
         bb_button.grid(row=0, column=1)
