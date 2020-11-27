@@ -18,7 +18,7 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
         // get next video from squeue service
         if let Some(url) = curr.clone() {
             //start process
-            let mut process = player.start(&url, &volume)?;
+            let mut process = player.start(url, &volume)?;
             let mut playback_status = true;
             client
                 .post(playback_address)

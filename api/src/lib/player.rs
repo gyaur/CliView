@@ -6,7 +6,7 @@ use reqwest::blocking::Client;
 use subprocess::Popen;
 
 pub trait Player {
-    fn start(&self, media: &Url, volume: &Volume) -> Result<Popen>;
+    fn start(&self, media: Url, volume: &Volume) -> Result<Popen>;
     fn stop(&self, process: &mut Popen) -> Result<()>;
     fn play(&self, process: &mut Popen) -> Result<()>;
     fn pause(&self, process: &mut Popen) -> Result<()>;
@@ -35,8 +35,8 @@ pub trait Player {
 pub struct OMXPlayer;
 
 impl Player for OMXPlayer {
-    fn start(&self, media: &Url, volume: &Volume) -> Result<Popen> {
-        stream(&media, *volume)
+    fn start(&self, media: Url, volume: &Volume) -> Result<Popen> {
+        stream(media, *volume)
     }
 
     fn stop(&self, process: &mut Popen) -> Result<()> {
@@ -113,7 +113,7 @@ impl Player for OMXPlayer {
             Action::Seek(ammount) => self.seek(&mut process, *ammount),
             Action::Stream(url) => {
                 self.stop(&mut process)?;
-                *process = self.start(&url, &current_volume)?;
+                *process = self.start(url.clone(), &current_volume)?;
                 sleep(cfg.playback_start_timeout);
                 self.pause(&mut process)?;
                 sleep(cfg.playback_loadscreen_timeout);
