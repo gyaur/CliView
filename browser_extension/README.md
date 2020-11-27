@@ -74,4 +74,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-![testing_extension](https://github.com/gyaur/CliView/blob/master/Browser%20Extension/Test.gif)
+![testing_extension](https://github.com/gyaur/CliView/blob/master/browser_extension/Test.gif)
