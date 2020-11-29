@@ -54,7 +54,8 @@ fn setup_rocket() -> Result<Rocket> {
                 play,
                 pause,
                 playback,
-                set_playback
+                set_playback,
+                current_get
             ],
         )
         .attach(cors)
