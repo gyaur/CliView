@@ -1,8 +1,8 @@
 use crate::Url;
 use crate::Volume;
 use cached::proc_macro::cached;
-use std::error::Error;
 use std::io::Write;
+use std::{error::Error, fmt};
 use subprocess::{Popen, PopenConfig, Redirection};
 use youtube_dl::YoutubeDl;
 
@@ -10,6 +10,14 @@ use youtube_dl::YoutubeDl;
 pub enum CustomError {
     FeatureError(String),
 }
+
+impl fmt::Display for CustomError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Oh no, something bad went down")
+    }
+}
+
+impl Error for CustomError {}
 
 #[cached(size = 100)]
 pub fn extract_url(url: Url) -> Result<Url, CustomError> {
@@ -42,7 +50,7 @@ pub fn extract_url(url: Url) -> Result<Url, CustomError> {
 }
 
 #[cfg(target_arch = "arm")]
-pub fn stream(url: &Url, volume: Volume) -> Result<Popen, Box<dyn Error>> {
+pub fn stream(url: Url, volume: Volume) -> Result<Popen, Box<dyn Error>> {
     let url = extract_url(url)?;
 
     let p = Popen::create(
@@ -68,7 +76,7 @@ pub fn stream(url: &Url, volume: Volume) -> Result<Popen, Box<dyn Error>> {
 }
 
 #[cfg(target_arch = "x86_64")]
-pub fn stream(_url: &Url, _volume: Volume) -> Result<Popen, Box<dyn Error>> {
+pub fn stream(_url: Url, _volume: Volume) -> Result<Popen, Box<dyn Error>> {
     let argv = &["ping", "-c", "10", "8.8.8.8"];
 
     let p = Popen::create(

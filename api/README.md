@@ -40,23 +40,32 @@ All request and response bodies are empty unless specified otherwise
 
 
 **/queue [GET]**
-* Body: Empty
 * Responses:
   * 200 - OK
-    * [json] List of videos in the queue `{"queue": [{"url": url}],...}`
+    * [json] List of videos in the queue `{"queue": [{"url": url, "extracted_url": extracted_url},...]}`
+      * where *url* is the url that was passed in and the *extracted_url* is the direct link to the video
+  * 400 - Bad Request
+    * bad link or incorrect json
+  * 500 - Internal server error
+
+**/current [GET]**
+* Responses:
+  * 200 - OK
+    * [json] currently playing videos url `{"url": url, "extracted_url": extracted_url}`
+      * where *url* is the url that was passed in and the *extracted_url* is the direct link to the video
+      * *url* is always a string, but *extracted_url* could be null
+      * if no video is playing the the value is null
   * 400 - Bad Request
     * bad link or incorrect json
   * 500 - Internal server error
 
 **/inc [POST]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * Increases volume of playback by 1
   * 500 - Internal server error
 
 **/dec [POST]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * Decreases volume of playback by 1
@@ -64,14 +73,12 @@ All request and response bodies are empty unless specified otherwise
 
 
 **/play [POST]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * Starts playback
   * 500 - Internal server error
 
 **/pause [POST]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * Starts playback
@@ -79,7 +86,6 @@ All request and response bodies are empty unless specified otherwise
 
 
 **/playback [GET]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * [json] `{"status": playback_status}`
@@ -100,7 +106,6 @@ All request and response bodies are empty unless specified otherwise
 
 
 **/volume [GET]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * [json] `{"volume": volume}`
@@ -121,7 +126,6 @@ All request and response bodies are empty unless specified otherwise
 
 
 **/skip [POST]**
-* Body: Empty
 * Responses:
   * 200 - OK
     * currently playing video is skipeed

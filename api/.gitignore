@@ -1,2 +1,9 @@
 .*
 target
+.*
+*.sh
+*.sqlite*
+Makefile
+*.html
+*.py
+*.md

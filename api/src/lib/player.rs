@@ -6,7 +6,7 @@ use reqwest::blocking::Client;
 use subprocess::Popen;
 
 pub trait Player {
-    fn start(&self, media: &Url, volume: &Volume) -> Result<Popen>;
+    fn start(&self, media: Url, volume: &Volume) -> Result<Popen>;
     fn stop(&self, process: &mut Popen) -> Result<()>;
     fn play(&self, process: &mut Popen) -> Result<()>;
     fn pause(&self, process: &mut Popen) -> Result<()>;
@@ -28,15 +28,14 @@ pub trait Player {
         cmd: &Action,
         client: &Client,
         cfg: &Config,
-        playback_address: &str,
     ) -> Result<()>;
 }
 
 pub struct OMXPlayer;
 
 impl Player for OMXPlayer {
-    fn start(&self, media: &Url, volume: &Volume) -> Result<Popen> {
-        stream(&media, *volume)
+    fn start(&self, media: Url, volume: &Volume) -> Result<Popen> {
+        stream(media, *volume)
     }
 
     fn stop(&self, process: &mut Popen) -> Result<()> {
@@ -106,14 +105,13 @@ impl Player for OMXPlayer {
         cmd: &Action,
         client: &Client,
         cfg: &Config,
-        playback_address: &str,
     ) -> Result<()> {
         match cmd {
             Action::Skip => self.skip(&mut process),
             Action::Seek(ammount) => self.seek(&mut process, *ammount),
             Action::Stream(url) => {
                 self.stop(&mut process)?;
-                *process = self.start(&url, &current_volume)?;
+                *process = self.start(url.clone(), &current_volume)?;
                 sleep(cfg.playback_start_timeout);
                 self.pause(&mut process)?;
                 sleep(cfg.playback_loadscreen_timeout);
@@ -136,7 +134,7 @@ impl Player for OMXPlayer {
                     self.pause(&mut process)?;
                     *playback_status = true;
                     client
-                        .post(playback_address)
+                        .post(&cfg.command_playback_address)
                         .json(&PlaybackStatus::new(*playback_status))
                         .send()?;
                 }
@@ -147,7 +145,7 @@ impl Player for OMXPlayer {
                     self.pause(&mut process)?;
                     *playback_status = false;
                     client
-                        .post(playback_address)
+                        .post(&cfg.command_playback_address)
                         .json(&PlaybackStatus::new(*playback_status))
                         .send()?;
                 }
