@@ -28,7 +28,6 @@ pub trait Player {
         cmd: &Action,
         client: &Client,
         cfg: &Config,
-        playback_address: &str,
     ) -> Result<()>;
 }
 
@@ -106,7 +105,6 @@ impl Player for OMXPlayer {
         cmd: &Action,
         client: &Client,
         cfg: &Config,
-        playback_address: &str,
     ) -> Result<()> {
         match cmd {
             Action::Skip => self.skip(&mut process),
@@ -136,7 +134,7 @@ impl Player for OMXPlayer {
                     self.pause(&mut process)?;
                     *playback_status = true;
                     client
-                        .post(playback_address)
+                        .post(&cfg.command_playback_address)
                         .json(&PlaybackStatus::new(*playback_status))
                         .send()?;
                 }
@@ -147,7 +145,7 @@ impl Player for OMXPlayer {
                     self.pause(&mut process)?;
                     *playback_status = false;
                     client
-                        .post(playback_address)
+                        .post(&cfg.command_playback_address)
                         .json(&PlaybackStatus::new(*playback_status))
                         .send()?;
                 }
