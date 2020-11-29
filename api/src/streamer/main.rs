@@ -2,15 +2,15 @@ use lib::Url;
 use lib::{Action, Config as CliViewConfig};
 use lib::{GenericResult as Result, Player, Volume};
 use lib::{OMXPlayer, PlaybackStatus};
-// use reqwest;
+use reqwest::blocking::get;
 use std::thread::sleep;
 use std::time::Duration;
 
 fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
     loop {
         let client = reqwest::blocking::Client::new();
-        let mut volume = reqwest::blocking::get(&cfg.command_volume_address)?.json::<Volume>()?;
-        let curr = reqwest::blocking::get(&cfg.queue_front_address)?.json::<Option<Url>>()?;
+        let mut volume = get(&cfg.command_volume_address)?.json::<Volume>()?;
+        let curr = get(&cfg.queue_front_address)?.json::<Option<Url>>()?;
         // get next video from squeue service
         if let Some(url) = curr.clone() {
             //start process
@@ -25,9 +25,8 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
             sleep(cfg.playback_loadscreen_timeout);
             player.play(&mut process)?;
             loop {
-                if let Some(cmd) =
-                    reqwest::blocking::get(&cfg.command_front_address)?.json::<Option<Action>>()?
-                {
+                if let Some(cmd) = get(&cfg.command_front_address)?.json::<Option<Action>>()? {
+                    println!("{:?}", cmd);
                     let result = player.work(
                         &mut process,
                         &mut volume,
@@ -37,7 +36,6 @@ fn stream_loop(cfg: CliViewConfig, player: Box<dyn Player>) -> Result<()> {
                         &cfg,
                     );
                     println!("{:?}", result);
-                    assert!(result.is_ok());
                 }
                 if let Some(_val) = process.poll() {
                     break;
