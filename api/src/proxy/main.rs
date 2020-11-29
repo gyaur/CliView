@@ -12,6 +12,7 @@ use rocket::{
 //Queue service functions
 gen_proxy_function!(queue_get, "/queue", get, queue_port);
 gen_proxy_function!(queue_post, "/queue", post, queue_port);
+gen_proxy_function!(current_get, "/current", get, queue_port);
 
 //Command service functions
 gen_proxy_function!(stream, "/stream", post, command_port);
@@ -98,6 +99,7 @@ mod test {
 
     //Queue service tests
     generate_test!(test_queue_get, queue_port, get, "/queue");
+    generate_test!(test_current_get, queue_port, get, "/current");
     generate_test!(test_queue_post, queue_port, post, "/queue");
 
     //Command service tests
