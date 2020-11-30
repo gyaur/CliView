@@ -240,9 +240,9 @@ checksum = "0e4cec68f03f32e44924783795810fa50a7035d8c8ebe78580ad7e6c703fba38"
 
 [[package]]
 name = "cached"
-version = "0.20.0"
+version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c20611fb80d002056306ce7ec754bb7485caa30ac2fbe25341ef470ce3c76aa"
+checksum = "db101a7a0823fa3fada8def3e7c72a55a5b75eb9997a8108f04eace519a21d13"
 dependencies = [
  "async-mutex",
  "async-trait",
