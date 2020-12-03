@@ -48,3 +48,8 @@
 11.27:
 	- GUI update for modern look. 
 	- Added UI resources to the applicaiton.
+
+12.03:
+	- Added functionality to the GUI, like the link_list editing
+	- Updated visuals on the GUI.
+	- Reorganized the GUI and the backend classes to reduce dependency.

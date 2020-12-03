@@ -1,8 +1,5 @@
 import json
 import requests
-import tkinter as tk
-from PIL import Image, ImageTk
-from tkinter import messagebox, ttk, filedialog
 from constants import MCAST, NEXT, SCROLL, VOLUME, P_STATUS, START, STOP, SETTINGS
 import validators
 
@@ -26,19 +23,8 @@ class Functionality:
     def is_valid_link(self, link: str) -> bool:
         return validators.url(link)
 
-    def error(self, msg: str):
-        messagebox.showerror(title="Error", message=msg)
-
-    def upload(self, tkList: tk.Listbox, link: str):
-        tkList.insert("end", link)
-
-    # Add all links to the queue
-    def cast(self, tkList: tk.Listbox):
-        self.cmd_mcast(tkList.get(0, "end"))
-
     # It will cast the video at once
     def cmd_cast(self, link: list):
-
         err = 0
         if self.is_valid_link(link[0]):
             err = self.responder.post(MCAST, {"url": link[0]})
@@ -51,7 +37,6 @@ class Functionality:
 
     # This will add all links to a queue
     def cmd_mcast(self, links: list):
-
         codes = [
             self.responder.post(
                 MCAST, {
@@ -102,31 +87,6 @@ class Functionality:
                 raise CustomError(
                     f"An error occurred, server response : {err}")
 
-    def save_links(self, tkList: tk.Listbox):
-        with filedialog.asksaveasfile(mode='w', defaultextension=("text files", "*.txt")) as file:
-            data = tkList.get(0, "end")
-            file.write("\n".join(data))
-
-    def load_links(self, tkList: tk.Listbox):
-        tkList.delete(0, "end")
-
-        filename = filedialog.askopenfilename(
-            initialdir="/",
-            title="Select your playlist",
-            filetypes=[
-                ("text files",
-                 "*.txt")])
-        with open(filename, "r") as file:
-            data = file.read().split("\n")
-            tkList.insert("end", *data)
-
-    def load_local_file(self, tkList: tk.Listbox):
-        filename = filedialog.askopenfilename(
-            initialdir="/",
-            title="Select your playlist")
-
-        tkList.insert("end", filename)
-
     def cmd_set(self, settings: list):
         if len(settings) != 2:
             raise CustomError(
@@ -140,39 +100,9 @@ class Functionality:
             file.truncate()
             json.dump(data, file)
 
-    def set(self, _ip: str, _port: str, window: tk.Tk):
-        self.responder.reset_address(_ip, _port)
-        self.cmd_set([_ip, _port])
-        window.destroy()
-
     # Auto multiply the value with 30.
     def cmd_scroll(self, value: int):
         self.responder.post(SCROLL, {"ammount": value * 30})
-
-    def scroll_video(self, command: str, btn: ttk.Button = None):
-        def fff(): self.cmd_scroll(5)
-        def bbb(): self.cmd_scroll(-5)
-        def bb(): self.cmd_scroll(-1)
-        def ff(): self.cmd_scroll(5)
-
-        def start(btn: ttk.Button):
-            cmd, label = "", ""
-
-            if self.is_music_playing():
-                cmd = STOP
-                label = "play"
-            else:
-                cmd = START
-                label = "stop"
-
-            self.responder.post(cmd)
-
-        commands = {"bbb": bbb, "bb": bb, "ff": ff, "fff": fff, "start": start}
-        if btn:
-            f = commands[command]
-            f(btn)
-            return
-        commands[command]()
 
 # This is the communication between the server and the application
 

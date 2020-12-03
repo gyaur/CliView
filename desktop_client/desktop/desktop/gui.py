@@ -1,22 +1,23 @@
 import tkinter as tk
+from tkinter import messagebox, ttk, filedialog
 import functionality as func
 from tkinter import ttk
 from PIL import Image, ImageTk
 import os
 from constants import LOW_V, HIGH_V, START_V
 
-#https://stackoverflow.com/questions/3966303/tkinter-slider-how-to-trigger-the-event-only-when-the-iteraction-is-complete
-
 class ResposeWriterGUI:
     def __init__(self):
         # Handler
         self.handler = func.Functionality()
+        self._job    = None
 
         # ------------------------------Setting up the main window-------------
         main_window = tk.Tk()
         main_window.title("CliView")
         main_window.geometry("500x700")
         main_window.resizable(False, False)
+        self.app = main_window
         
 
         #Background image
@@ -26,10 +27,6 @@ class ResposeWriterGUI:
         canvas.image = foot_img
         canvas.place(x=0, y=0, relwidth=1, relheight=1)
         
-        # Styles :
-        mixer_style = ttk.Style().configure('Horizontal.TScale',
-                                            sliderthickness=100)
-
         # Setting up frames
         logo_frame = tk.Frame(main_window, width=500, height=200)
         logo_frame.pack(side="top", pady=(5, 25))
@@ -41,9 +38,9 @@ class ResposeWriterGUI:
         links_frame.pack(side="top", anchor="center")
 
         control_frame = tk.Frame(main_window, width=200, height=50)
-        control_frame.pack(anchor="center", pady=(50, 0))
+        control_frame.pack(anchor="center", pady=(70, 10))
 
-        sound_frame = tk.Frame(main_window, width=200, height=50)
+        sound_frame = tk.Frame(main_window, width=200, height=50, bg="white")
         sound_frame.pack(anchor="center")
 
         master_frame = tk.Frame(main_window, width=200, height=50)
@@ -57,28 +54,27 @@ class ResposeWriterGUI:
         logo_label.pack(anchor="center")
 
         # Links frame
-        upload_links = ttk.Entry(input_frame, width=45)
-        upload_links.grid(row=0, column=0, columnspan=2)
+        self.upload_links = ttk.Entry(input_frame, width=45)
+        self.upload_links.grid(row=0, column=0, columnspan=2)
 
         upload_button = ttk.Button(
             input_frame,
             text="UPLOAD",
             width=13,
-            command=lambda: self.handler.upload(
-                link_list,
-                upload_links.get()) if upload_links.get() != "" else self.handler.load_local_file(link_list))
+            command=lambda: self.upload(self.upload_links.get()) if self.upload_links.get() != "" else self.load_local_file())
         upload_button.grid(row=0, column=3)
 
-        cast_button = ttk.Button(input_frame, text="CAST", width=13, command=lambda: self.handler.cast(
-            link_list) if link_list.size() > 0 else self.handler.error("Provide at least one link!"))
+        cast_button = ttk.Button(input_frame, text="CAST", width=13, command=lambda: self.cast()
+             if self.link_list.size() > 0 else self.error("Provide at least one link!"))
         cast_button.grid(row=0, column=4)
 
-        link_list = tk.Listbox(
+        self.link_list = tk.Listbox(
             links_frame,
-            selectmode="browse",
+            selectmode="extended",
             width=75,
             height=7)
-        link_list.pack(anchor="center")
+        self.link_list.bind("<KeyRelease>", self.delete_element)
+        self.link_list.pack(anchor="center")
 
         # Control frame
         bbb_icon = ImageTk.PhotoImage(Image.open(
@@ -89,63 +85,66 @@ class ResposeWriterGUI:
             "Pictures/ff.png").resize((40, 40), Image.ANTIALIAS))
         fff_icon = ImageTk.PhotoImage(Image.open(
             "Pictures/fff.png").resize((40, 40), Image.ANTIALIAS))
-        strt_icon= ImageTk.PhotoImage(Image.open(
+        self.strt_icon= ImageTk.PhotoImage(Image.open(
             "Pictures/play.png").resize((40, 40), Image.ANTIALIAS))
+        self.stop_icon= ImageTk.PhotoImage(Image.open(
+            "Pictures/stop.png").resize((40, 40), Image.ANTIALIAS))
 
         bbb_button = ttk.Button(
             control_frame,
             image = bbb_icon,
-            command=lambda: self.handler.scroll_video("bbb"))
+            command=lambda: self.scroll_video("bbb"))
         bbb_button.image = bbb_icon
 
         bb_button = ttk.Button(
             control_frame,
             image = bb_icon,
-            command=lambda: self.handler.scroll_video("bb"))
+            command=lambda: self.scroll_video("bb"))
         bb_button.image = bb_icon
 
-        start_button = ttk.Button(
+        self.start_button = ttk.Button(
             control_frame,
-            image = strt_icon,
-            command=lambda: self.handler.scroll_video(
-                "start",
-                start_button))
-        start_button.image = strt_icon
+            image = self.strt_icon,
+            command=lambda: self.scroll_video("start"))
+        self.start_button.image = self.strt_icon
 
         ff_button = ttk.Button(
             control_frame,
             image = ff_icon,
-            command=lambda: self.handler.scroll_video("ff"))
+            command=lambda: self.scroll_video("ff"))
         ff_button.image = ff_icon
 
         fff_button = ttk.Button(
             control_frame,
             image = fff_icon,
-            command=lambda: self.handler.scroll_video("fff"))
+            command=lambda: self.scroll_video("fff"))
         fff_button.image = fff_icon
 
         bbb_button.grid(row=0, column=0)
         bb_button.grid(row=0, column=1)
-        start_button.grid(row=0, column=2)
+        self.start_button.grid(row=0, column=2)
         ff_button.grid(row=0, column=3)
         fff_button.grid(row=0, column=4)
 
         # Sound frame
+        style = ttk.Style()
+        style.configure('TScale', background = 'white') 
+
         sound_icon = ImageTk.PhotoImage(Image.open(
             "Pictures/max_sound.png").resize((30, 30), Image.ANTIALIAS))
-        sound_label = ttk.Label(sound_frame, image=sound_icon)
+        sound_label = tk.Label(sound_frame, image=sound_icon, bg="white")
         sound_label.image = sound_icon
         sound_label.grid(row=0, column=0)
 
-        mixer = ttk.Scale(
+        self.mixer = ttk.Scale(
             sound_frame,
             from_=LOW_V,
             to=HIGH_V,
             orient="horizontal",
-            style=mixer_style,
-            command=lambda value_str: self.handler.set_volume(value_str))
-        mixer.set(START_V)
-        mixer.grid(row=0, column=1)
+            style='TScale',
+            command=self.updateValue)
+        self.mixer.set(START_V)
+        self.mixer.grid(row=0, column=1)
 
         # Master frame
         prev_button = ttk.Button(
@@ -158,13 +157,13 @@ class ResposeWriterGUI:
             text="Next",
             width=24,
             command=self.handler.next)
-        save_button = ttk.Button(master_frame, text="Save", width=50, command=lambda: self.handler.save_links(
-            link_list) if link_list.size() > 0 else self.handler.error("Nothing can be saved!"))
+        save_button = ttk.Button(master_frame, text="Save", width=50, command=lambda: self.save_links()
+            if self.link_list.size() > 0 else self.error("Nothing can be saved!"))
         load_button = ttk.Button(
             master_frame,
             text="Load",
             width=50,
-            command=lambda: self.handler.load_links(link_list))
+            command=lambda: self.load_links())
         set_button = ttk.Button(
             master_frame,
             text="Settings",
@@ -183,7 +182,7 @@ class ResposeWriterGUI:
         set_button.grid(row=3, column=0, columnspan=2)
         exit_button.grid(row=4, column=0, columnspan=2)
 
-        self.app = main_window
+       
 
     def start(self):
         self.app.mainloop()  # This is the main event loop place your code before this
@@ -225,11 +224,93 @@ class ResposeWriterGUI:
             set_frame,
             text="OK",
             width=25,
-            command=lambda: self.handler.set(
+            command=lambda: self.set(
                 ip_input.get(),
                 port_input.get(),
-                set_window) if ip_input.get() != "" and port_input.get() != "" else self.handler.error("Empty input fields!"))
+                set_window) if ip_input.get() != "" and port_input.get() != "" else self.error("Empty input fields!"))
         ok_button.pack(anchor="center")
 
         self.setting_window = set_window
         self.setting_window.mainloop()
+
+    def updateValue(self, event):
+        if self._job:
+            self.app.after_cancel(self._job)
+        self._job = self.app.after(500, lambda: self.handler.set_volume(self.mixer.get()))
+
+    def scroll_video(self, command: str):
+        def fff(): self.handler.cmd_scroll(5)
+        def bbb(): self.handler.cmd_scroll(-5)
+        def bb(): self.handler.cmd_scroll(-1)
+        def ff(): self.handler.cmd_scroll(5)
+
+        def start():
+            cmd = ""
+
+            if self.handler.is_music_playing():
+                cmd = STOP
+                self.start_button.configure(image = self.strt_icon)
+               
+            else:
+                cmd = START
+                self.start_button.configure(image = self.stop_icon)
+
+            self.handler.responder.post(cmd)
+
+        commands = {"bbb": bbb, "bb": bb, "ff": ff, "fff": fff, "start": start}
+        commands[command]()
+
+    def upload(self, link: str):
+        self.link_list.insert("end", link)
+
+    # Add all links to the queue
+    def cast(self):
+        self.handler.cmd_mcast(self.link_list.get(0, "end"))
+
+    def load_links(self):
+        self.link_list.delete(0, "end")
+
+        filename = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select your playlist",
+            filetypes=[
+                ("text files",
+                 "*.txt")])
+        if filename == "" : return
+
+        with open(filename, "r") as file:
+            data = file.read().split("\n")
+            self.link_list.insert("end", *data)
+
+    def load_local_file(self):
+        filename = filedialog.askopenfilename(
+            initialdir="/",
+            title="Select your playlist")
+
+        if filename == '' : return
+        self.link_list.insert("end", filename)
+
+    def set(self, _ip: str, _port: str, window: tk.Tk):
+        self.handler.responder.reset_address(_ip, _port)
+        self.handler.cmd_set([_ip, _port])
+        window.destroy()
+
+    def save_links(self):
+        file = filedialog.asksaveasfile(mode='w', defaultextension=[("text files", "*.txt")], filetypes=[("text files","*.txt")])
+        if not file : return
+        data = self.link_list.get(0, "end")
+        file.write("\n".join(data))
+
+    def error(self, msg: str):
+        messagebox.showerror(title="Error", message=msg)
+
+    def delete_element(self,e):
+        if e.keysym == "Delete" or e.keysym == "d":
+            items = self.link_list.get(0, "end")
+            indxs =  [idx for idx in self.link_list.curselection()]
+            keep  = [x for i,x in enumerate(items) if i not in indxs]
+            self.link_list.delete(0,"end")
+            self.link_list.insert("end", *keep)
+
+
+            
