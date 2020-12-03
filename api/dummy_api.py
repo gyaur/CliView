@@ -1,8 +1,10 @@
 import flask
 from flask import jsonify
+from flask_cors import CORS#added
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True    
+app.config["DEBUG"] = True 
+CORS(app)#added
 
 
 @app.route('/stream', methods=['POST'])
