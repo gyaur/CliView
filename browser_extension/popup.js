@@ -7,14 +7,14 @@ function playfunction() {
     else{
         document.getElementById("label1").style.display = "none";
         document.getElementById("label2").style.display = "block";
-        console.log("Your link has been started streaming: "+ link);
+        sendUrl(link);
     }
 }
 function deletefunction() {
     document.getElementById('inn').value = "";
     document.getElementById("label2").style.display = "none";
     document.getElementById("label1").style.display = "block";
-    console.log("Stream Ended");
+    control("skip");
 }
 
 function tabfunction() {
@@ -22,22 +22,22 @@ function tabfunction() {
 }
 
 function backfunction() {
-    console.log("5 seconds back");
+    control("dec");
 }
 
 function frontfunction() {
-    console.log("5 seconds forward");
+    control("inc");
 }
 
 function pausefunction() {
     document.getElementById("pause").style.display = "none";
     document.getElementById("repause").style.display = "inline-block";    
-    console.log("Video Paused");
+    control("pause");
 }
 function repausefunction() {
     document.getElementById("repause").style.display = "none";
     document.getElementById("pause").style.display = "inline-block";
-    console.log("Video Paused");
+    control("play");
 }
 
 
@@ -50,3 +50,38 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector("#pause").addEventListener('click', pausefunction);
   document.querySelector("#repause").addEventListener('click', repausefunction);
 });
+
+function sendUrl(link){
+let data = {url: link};
+
+fetch("http://127.0.0.1:5000/queue", {
+    method: "POST", 
+    body: JSON.stringify(data)
+    }).then(res => {
+        if(res.status==200){
+            console.log("Link has been sent!");
+        }else if(res.status==400){
+            console.log("Link is not correct!");
+        }else if(res.status==500){
+            console.log("Internal server error");
+        }else{
+            console.log("There is something went wrong");
+        }
+    });
+}
+
+function control(type){
+    let url = "http://127.0.0.1:5000/"+type;
+
+    fetch(url, {
+        method: "POST", 
+        }).then(res => {
+            if(res.status==200){
+                console.log("Request complete!");
+            }else if(res.status==500){
+                console.log("Internal server error");
+            }else{
+                console.log("There is something went wrong");
+            }
+        });
+    }
