@@ -3,8 +3,8 @@ import { View, Button, StyleSheet, Text } from 'react-native';
 import SearchBar from '../components/searchBar';
 import Player from '../components/player';
 import VolumeSlide from '../components/volumeSlide';
-import { Entypo } from '@expo/vector-icons';
 import jsonServer from '../api/jsonServer'
+
 
 const HomeScreen = () => {
 
@@ -20,6 +20,8 @@ const HomeScreen = () => {
         link={link}
         onLinkChange={newLink => setLink(newLink)}
         onLinkSubmit={() => {
+
+
           jsonServer.post('/stream', { url: link })
             .then(function (response) {
               console.log(response);
@@ -29,6 +31,7 @@ const HomeScreen = () => {
             })
           console.log("link submitted : ", link)
         }
+
         }
       />
 
@@ -37,17 +40,18 @@ const HomeScreen = () => {
           title="Cast now"
           color="#576574"
           onPress={() => {
-            jsonServer.post('/stream', { url: link })
+            jsonServer.post('/stream', { "url": link })
               .then(function (response) {
                 console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
               })
-            console.log("link submitted : ", link)
-          }}
+            
+          }
+          }
         />
-        <Text style={{marginHorizontal: 10, color: '#c8d6e5'}}> Or</Text>
+        <Text style={{ marginHorizontal: 10, color: '#c8d6e5' }}> Or</Text>
         <Button
           title="Add to queue"
           color="#576574"
@@ -71,6 +75,46 @@ const HomeScreen = () => {
         <VolumeSlide />
       </View>
 
+      
+  {/*
+      <Button
+          title="get vol"
+          color="#576574"
+          onPress={() => {
+            jsonServer.get('/volume')
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+          }}
+        /><Button
+        title="set vol to 8"
+        color="#576574"
+        onPress={() => {
+          jsonServer.post('/volume', { "volume": 8 })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+        }}
+      /><Button
+      title="cast"
+      color="#576574"
+      onPress={() => {
+        jsonServer.post('/queue ', { "url": "https://www.youtube.com/watch?v=l-PeBXv5lNQ" })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      }}
+    />
+     */}
     </View>
   )
 };
