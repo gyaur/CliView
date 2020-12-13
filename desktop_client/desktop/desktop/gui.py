@@ -4,7 +4,7 @@ import functionality as func
 from tkinter import ttk
 from PIL import Image, ImageTk
 import os
-from constants import LOW_V, HIGH_V, START_V
+from constants import LOW_V, HIGH_V, START_V, START, STOP
 
 class ResposeWriterGUI:
     def __init__(self):
@@ -17,6 +17,7 @@ class ResposeWriterGUI:
         main_window.title("CliView")
         main_window.geometry("500x700")
         main_window.resizable(False, False)
+        main_window.iconbitmap("Pictures/icon.ico")
         self.app = main_window
         
 
@@ -49,7 +50,7 @@ class ResposeWriterGUI:
         # Logo frame
         logo = ImageTk.PhotoImage(Image.open(
             "Pictures/logo.png").resize((150, 150), Image.ANTIALIAS))
-        logo_label = tk.Label(logo_frame, bg="#87CEFA", image=logo)
+        logo_label = tk.Label(logo_frame, image=logo)
         logo_label.image = logo
         logo_label.pack(anchor="center")
 
@@ -147,15 +148,10 @@ class ResposeWriterGUI:
         self.mixer.grid(row=0, column=1)
 
         # Master frame
-        prev_button = ttk.Button(
-            master_frame,
-            text="Previous",
-            width=24,
-            command=self.handler.previous)
         next_button = ttk.Button(
             master_frame,
             text="Next",
-            width=24,
+            width=50,
             command=self.handler.next)
         save_button = ttk.Button(master_frame, text="Save", width=50, command=lambda: self.save_links()
             if self.link_list.size() > 0 else self.error("Nothing can be saved!"))
@@ -175,11 +171,10 @@ class ResposeWriterGUI:
             width=50,
             command=main_window.destroy)
 
-        prev_button.grid(row=0, column=0)
-        next_button.grid(row=0, column=1)
+        next_button.grid(row=0, column=0, columnspan=2)
         save_button.grid(row=1, column=0, columnspan=2)
         load_button.grid(row=2, column=0, columnspan=2)
-        set_button.grid(row=3, column=0, columnspan=2)
+        set_button.grid(row=3,  column=0, columnspan=2)
         exit_button.grid(row=4, column=0, columnspan=2)
 
        
