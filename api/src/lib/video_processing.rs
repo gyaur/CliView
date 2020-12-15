@@ -22,7 +22,8 @@ impl Error for CustomError {}
 #[cached(size = 100)]
 pub fn extract_url(url: Url) -> Result<Url, CustomError> {
     if url.is_ip() {
-        return Ok(url.clone());
+        let out = Url::new(url.url.clone(), Some(url.url.clone()));
+        return Ok(out);
     }
 
     let output = YoutubeDl::new(&url.url)
