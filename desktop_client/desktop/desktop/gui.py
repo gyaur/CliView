@@ -280,10 +280,11 @@ class ResposeWriterGUI:
 
     def load_local_file(self):
         filename = filedialog.askopenfilename(
-            initialdir="/",
+            initialdir=".",
             title="Select your playlist")
 
         if filename == '' : return
+        filename = filename.split("/")[-1]
         self.link_list.insert("end", filename)
 
     def set(self, _ip: str, _port: str, window: tk.Tk):
