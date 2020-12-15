@@ -1,1 +1,1 @@
-{"networking": {"ip": "http://127.0.0.1", "port": "5000"}}
+{"networking": {"ip": "http://raspberrypi.local", "port": "5000"}}

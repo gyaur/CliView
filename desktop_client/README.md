@@ -2,6 +2,8 @@
 
 [![Python](https://www.python.org/static/community_logos/python-powered-w-200x80.png)](https://www.python.org/)
 
+![Desktop app](https://github.com/gyaur/CliView/workflows/Desktop%20app%20(Python)%20continuous%20integration/badge.svg)
+
 #### Installation:
  With .yaml file:
     Use the .yaml file in ```CliView\desktop_client\desktop\desktop\Installation``` folder it includes everything needed to run the application and the server too.
@@ -38,9 +40,9 @@
     | ------ | ------ |
     | - | - |
 
-1. Basically this is multicast with one url. Multiple urls can be provided but only the first one will be used [untested]:
+1. Basically this is multicast with one url. Multiple urls can be provided but only the first one will be used. The "" are needed because some cases the url gets interpreted in pieces. The local file sharing was tested on the mock server, the url still does not work. (Might be windows error):
     ```
-    python main.py --cast url
+    python main.py --cast "url"
     ```
     
     **Possible errors:**
@@ -50,7 +52,7 @@
 
 1. Adds url to the playlist queue  [untested]:
     ```
-    python main.py --mcast url1 url2 ... urln
+    python main.py --mcast "url1" "url2" ... "urln"
     ```
      **Possible errors:**
     | Error | Problem |

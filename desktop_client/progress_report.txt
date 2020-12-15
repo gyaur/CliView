@@ -34,4 +34,22 @@
 	- Tested most of the feature functions and added test.py
 	- Added instructios to the readme.
 	- Connected the desktop application with the mock version of the server.
+
+11.19:
+	- Changed the test framework to pytest. The applications passed all tests.
+	- Wrote the github CI actions for continuous integration.
 	
+
+11.26:
+	- Added local file sharing.
+	- Extended the tests with local file sharing.
+	- Updated the readme.
+
+11.27:
+	- GUI update for modern look. 
+	- Added UI resources to the applicaiton.
+
+12.03:
+	- Added functionality to the GUI, like the link_list editing
+	- Updated visuals on the GUI.
+	- Reorganized the GUI and the backend classes to reduce dependency.
