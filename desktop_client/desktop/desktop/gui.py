@@ -17,7 +17,8 @@ class ResposeWriterGUI:
         main_window.title("CliView")
         main_window.geometry("500x700")
         main_window.resizable(False, False)
-        main_window.iconbitmap("Pictures/icon.ico")
+        #main_window.iconbitmap("Pictures/icon.ico") It only works for Windows.
+        main_window.tk.call('wm', 'iconphoto', main_window._w, ImageTk.PhotoImage(file='Pictures/icon.ico'))
         self.app = main_window
         
 
