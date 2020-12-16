@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
-import jsonServer from '../../api/jsonServer'
-
+import axios from "axios"
 class Forward extends React.Component {
 
 	constructor() {
@@ -12,7 +11,7 @@ class Forward extends React.Component {
 
 
 	forwardreq() {
-		const res = jsonServer.post('/seek ', { "ammount": 30 })
+		const res = axios.post(this.props.IP + '/seek ', { "ammount": 30 })
 			.then(function (response) {
 				console.log(response);
 			})

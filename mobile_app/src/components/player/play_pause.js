@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import jsonServer from '../../api/jsonServer'
+import axios from 'axios';
 
 
 class PlayPause extends React.Component {
@@ -12,7 +13,7 @@ class PlayPause extends React.Component {
 	}
 
 	playReq() {
-		const res = jsonServer.post('/play ', {})
+		const res = axios.post(this.props.IP + '/play ', {})
 			.then(function (response) {
 				console.log(response);
 			})
@@ -27,7 +28,7 @@ class PlayPause extends React.Component {
 
 
 	pauseReq() {
-		const res = jsonServer.post('/pause ', {})
+		const res = axios.post(this.props.IP + '/pause ', {})
 			.then(function (response) {
 				console.log(response);
 			})
@@ -52,11 +53,13 @@ class PlayPause extends React.Component {
 					onPress={
 						(this.state.playing === false) ?
 							() => {
-								this.playReq()
+								this.playReq();
+								this.setState({playing: true});
 							}
 							:
 							() => {
-								this.pauseReq()
+								this.pauseReq();
+								this.setState({playing: false});
 							}
 					}>
 					{this.state.playing ?

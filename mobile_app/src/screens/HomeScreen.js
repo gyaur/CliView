@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
-import { View, Button, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
 import SearchBar from '../components/searchBar';
 import Player from '../components/player';
 import VolumeSlide from '../components/volumeSlide';
-import jsonServer from '../api/jsonServer'
-
+import StaticServer from 'react-native-static-server';
+import axios from 'axios'
 
 const HomeScreen = () => {
 
   const [link, setLink] = useState('');
+  const [IP, setIP] = useState('http://localhost:5000');
+
+
+  useEffect(() => {
+    let server = new StaticServer(8080);
+    console.log(server)
+    //server.start().then(url => {
+      //this.setState({ url });
+      //console.log("Serving at URL", url);
+    //});
+  }, []);
 
   return (
     <View>
@@ -22,7 +33,7 @@ const HomeScreen = () => {
         onLinkSubmit={() => {
 
 
-          jsonServer.post('/stream', { url: link })
+          axios.post(IP + '/stream', { url: link })
             .then(function (response) {
               console.log(response);
             })
@@ -40,14 +51,14 @@ const HomeScreen = () => {
           title="Cast now"
           color="#576574"
           onPress={() => {
-            jsonServer.post('/stream', { "url": link })
+            axios.post(IP + '/stream', { "url": link })
               .then(function (response) {
                 console.log(response);
               })
               .catch(function (error) {
                 console.log(error);
               })
-            
+
           }
           }
         />
@@ -57,7 +68,7 @@ const HomeScreen = () => {
           color="#576574"
           onPress={() => {
             //casting function here 
-            jsonServer.post('/queue ', { url: link })
+            axios.post(IP + '/queue ', { url: link })
               .then(function (response) {
                 console.log(response);
               })
@@ -69,52 +80,28 @@ const HomeScreen = () => {
         />
       </View >
 
-      <Player />
+      <Player newIP={IP} />
 
       <View style={styles.slidecontainer}>
-        <VolumeSlide />
+        <VolumeSlide newIP={IP} />
       </View>
 
-      
-  {/*
-      <Button
-          title="get vol"
+      <View style={styles.IPbackgroundStyle}>
+        <Button
+          style={{ marginHorizontal: 15 }}
+          title="Change IP"
           color="#576574"
-          onPress={() => {
-            jsonServer.get('/volume')
-              .then(function (response) {
-                console.log(response);
-              })
-              .catch(function (error) {
-                console.log(error);
-              })
-          }}
-        /><Button
-        title="set vol to 8"
-        color="#576574"
-        onPress={() => {
-          jsonServer.post('/volume', { "volume": 8 })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            })
-        }}
-      /><Button
-      title="cast"
-      color="#576574"
-      onPress={() => {
-        jsonServer.post('/queue ', { "url": "https://www.youtube.com/watch?v=l-PeBXv5lNQ" })
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      }}
-    />
-     */}
+        />
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="IP"
+          style={styles.IPinputStyle}
+          value={IP}
+          onChangeText={newIP => setIP(newIP)}
+        />
+      </View>
+
     </View>
   )
 };
@@ -142,12 +129,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "90%"
   },
-  fullSreenIcon: {
-    flexGrow: 1,
-    marginHorizontal: 10,
-    padding: 10,
+  IPbackgroundStyle: {
+    backgroundColor: '#F0EEEE',
+    height: 40,
+    borderRadius: 7,
+    marginTop: 60,
+    marginHorizontal: 15,
+    flexDirection: "row"
+  },
+  IPinputStyle: {
+    flex: 1,
+    fontSize: 14,
+    marginHorizontal: 25
   }
-
 });
 
 export default HomeScreen;

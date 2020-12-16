@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
 
 import Backward from './player/backward'
 import PlayPause from './player/play_pause'
 import Forward from './player/forward'
 
-const Player = () => {
+const Player = ({ newIP }) => {
 
   return (
     <View style={{
@@ -15,9 +15,9 @@ const Player = () => {
       marginTop: 50,
       flexDirection: "row",
     }}>
-      <Backward />
-      <PlayPause />
-      <Forward />
+      <Backward IP={newIP} />
+      <PlayPause IP={newIP} />
+      <Forward IP={newIP} />
     </View>
   )
 };

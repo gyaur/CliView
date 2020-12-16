@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
-
+import axios from "axios" 
 import jsonServer from '../api/jsonServer'
 
 class VolumeSlide extends React.Component {
@@ -15,7 +15,7 @@ class VolumeSlide extends React.Component {
 
   setVolReq(url, data) {
     
-    jsonServer.post(url, data)
+    axios.post(url, data)
       .then(function (response) {
         console.log(response);
       })
@@ -44,11 +44,11 @@ class VolumeSlide extends React.Component {
           onPress={() => {
             if (this.state.sliderValue === 0) {
               this.setState({sliderValue:70});
-              this.setVolReq('/volume', { "volume": 7 })
+              this.setVolReq(this.props.newIP + '/volume', { "volume": 7 })
             }
             else {
               this.setState({sliderValue:0});
-              this.setVolReq('/volume', { "volume": 0 })
+              this.setVolReq(this.props.newIP + '/volume', { "volume": 0 })
             }
           }} >
           {this.state.sliderValue === 0 ?
@@ -76,7 +76,7 @@ class VolumeSlide extends React.Component {
           }
           onSlidingComplete={() => {
             //console.log('volume should be updated to :', sliderValue) 
-            this.setVolReq('/volume', { "volume": this.state.sliderValue / 10 })
+            this.setVolReq(this.props.newIP + '/volume', { "volume": this.state.sliderValue / 10 })
           }}
         />
 
