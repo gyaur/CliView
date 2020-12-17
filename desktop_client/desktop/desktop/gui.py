@@ -17,7 +17,8 @@ class ResposeWriterGUI:
         main_window.title("CliView")
         main_window.geometry("500x700")
         main_window.resizable(False, False)
-        # main_window.iconbitmap("Pictures/icon.ico")
+        #main_window.iconbitmap("Pictures/icon.ico") It only works for Windows.
+        main_window.tk.call('wm', 'iconphoto', main_window._w, ImageTk.PhotoImage(file='Pictures/icon.ico'))
         self.app = main_window
         
 
@@ -55,7 +56,7 @@ class ResposeWriterGUI:
         logo_label.pack(anchor="center")
 
         # Links frame
-        self.upload_links = ttk.Entry(input_frame, width=45)
+        self.upload_links = ttk.Entry(input_frame, width=40)
         self.upload_links.grid(row=0, column=0, columnspan=2)
 
         upload_button = ttk.Button(
@@ -65,7 +66,7 @@ class ResposeWriterGUI:
             command=lambda: self.upload(self.upload_links.get()) if self.upload_links.get() != "" else self.load_local_file())
         upload_button.grid(row=0, column=3)
 
-        cast_button = ttk.Button(input_frame, text="CAST", width=13, command=lambda: self.cast()
+        cast_button = ttk.Button(input_frame, text="CAST   ", command=lambda: self.cast()
              if self.link_list.size() > 0 else self.error("Provide at least one link!"))
         cast_button.grid(row=0, column=4)
 
