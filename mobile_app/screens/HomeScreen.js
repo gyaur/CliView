@@ -86,16 +86,16 @@ const HomeScreen = () => {
       }}>
 
         <Button
-          title="Skip to the next video"
+          title="Skip"
           color="#576574"
-          onPress={() => {  
+          onPress={() => {
             axios.post(IP + '/skip', {})
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            })
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
 
           }}
         />
