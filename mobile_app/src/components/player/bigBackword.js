@@ -4,7 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios'
 
 
-class Backward extends React.Component {
+class BigBackward extends React.Component {
 
 	constructor() {
 		super();
@@ -13,7 +13,7 @@ class Backward extends React.Component {
 
 
 	backwardReq() {
-		const res = axios.post(this.props.IP + '/seek ', { "ammount": -30 })
+		const res = axios.post(this.props.IP + '/seek ', { "ammount": -90 })
 			.then(function (response) {
 				console.log(response);
 			})
@@ -39,7 +39,7 @@ class Backward extends React.Component {
 					}}
 					onPress={() => { this.backwardReq() }}
 				>
-					<AntDesign name="caretleft" size={24} color="#c8d6e5" />
+					<AntDesign name="banckward" size={24} color="#c8d6e5" />
 				</TouchableOpacity>
 			</View >
 		)
@@ -48,5 +48,5 @@ class Backward extends React.Component {
 }
 
 
-export default Backward;
+export default BigBackward;
 

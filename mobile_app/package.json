@@ -1,16 +1,32 @@
 {
-  "name": "jsonserver",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "server" : "json-server -w db.json",
-    "tunnel" : "ngrok http 3000"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "jest": {
+    "preset": "jest-expo"
+  },
   "dependencies": {
-    "json-server": "^0.16.2",
-    "ngrok": "^3.3.0"
-  }
+    "@react-native-community/slider": "^3.0.3",
+    "axios": "^0.21.0",
+    "expo": "~39.0.2",
+    "expo-linear-gradient": "^8.3.1",
+    "expo-status-bar": "~1.0.2",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
+    "react-native-static-server": "^0.5.0",
+    "react-native-web": "~0.13.12"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.9.0",
+    "jest-expo": "^39.0.0",
+    "react-test-renderer": "^17.0.1"
+  },
+  "private": true
 }

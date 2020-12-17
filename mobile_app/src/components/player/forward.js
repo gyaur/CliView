@@ -36,7 +36,7 @@ class Forward extends React.Component {
 					borderRadius: 50
 				}}
 					onPress={() => { this.forwardreq() }}>
-					<AntDesign name="forward" size={24} color="#c8d6e5" />
+					<AntDesign name="caretright" size={24} color="#c8d6e5" />
 				</TouchableOpacity>
 			</View >
 		)
