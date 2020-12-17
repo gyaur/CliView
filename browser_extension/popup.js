@@ -1,10 +1,10 @@
 
 function playfunction() {
     let link = document.getElementById('inn').value;
-    if(link==""){
-      console.log("Paste something");
+    if (link == "") {
+        console.log("Paste something");
     }
-    else{
+    else {
         document.getElementById("label1").style.display = "none";
         document.getElementById("label2").style.display = "block";
         sendUrl(link);
@@ -18,7 +18,9 @@ function deletefunction() {
 }
 
 function tabfunction() {
-    window.open(document.getElementById('inn').value,"_blank");
+    control("skip")
+    setTimeout(() => window.open(document.getElementById('inn').value, "_blank"), 500)
+
 }
 
 function backfunction() {
@@ -31,7 +33,7 @@ function frontfunction() {
 
 function pausefunction() {
     document.getElementById("pause").style.display = "none";
-    document.getElementById("repause").style.display = "inline-block";    
+    document.getElementById("repause").style.display = "inline-block";
     control("pause");
 }
 function repausefunction() {
@@ -42,46 +44,46 @@ function repausefunction() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector("#play").addEventListener('click', playfunction);
-  document.querySelector("#delete").addEventListener('click', deletefunction);
-  document.querySelector("#tab").addEventListener('click', tabfunction);
-  document.querySelector("#back").addEventListener('click', backfunction);
-  document.querySelector("#front").addEventListener('click', frontfunction);
-  document.querySelector("#pause").addEventListener('click', pausefunction);
-  document.querySelector("#repause").addEventListener('click', repausefunction);
+    document.querySelector("#play").addEventListener('click', playfunction);
+    document.querySelector("#delete").addEventListener('click', deletefunction);
+    document.querySelector("#tab").addEventListener('click', tabfunction);
+    document.querySelector("#back").addEventListener('click', backfunction);
+    document.querySelector("#front").addEventListener('click', frontfunction);
+    document.querySelector("#pause").addEventListener('click', pausefunction);
+    document.querySelector("#repause").addEventListener('click', repausefunction);
 });
 
-function sendUrl(link){
-let data = {url: link};
+function sendUrl(link) {
+    let data = { url: link };
 
-fetch("http://127.0.0.1:5000/queue", {
-    method: "POST", 
-    body: JSON.stringify(data)
+    fetch("http://raspberrypi.local:5000/queue", {
+        method: "POST",
+        body: JSON.stringify(data)
     }).then(res => {
-        if(res.status==200){
+        if (res.status == 200) {
             console.log("Link has been sent!");
-        }else if(res.status==400){
+        } else if (res.status == 400) {
             console.log("Link is not correct!");
-        }else if(res.status==500){
+        } else if (res.status == 500) {
             console.log("Internal server error");
-        }else{
+        } else {
             console.log("There is something went wrong");
         }
     });
 }
 
-function control(type){
-    let url = "http://127.0.0.1:5000/"+type;
+function control(type) {
+    let url = "http://raspberrypi.local:5000/" + type;
 
     fetch(url, {
-        method: "POST", 
-        }).then(res => {
-            if(res.status==200){
-                console.log("Request complete!");
-            }else if(res.status==500){
-                console.log("Internal server error");
-            }else{
-                console.log("There is something went wrong");
-            }
-        });
-    }
+        method: "POST",
+    }).then(res => {
+        if (res.status == 200) {
+            console.log("Request complete!");
+        } else if (res.status == 500) {
+            console.log("Internal server error");
+        } else {
+            console.log("There is something went wrong");
+        }
+    });
+}
